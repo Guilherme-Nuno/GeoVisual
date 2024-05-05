@@ -1,4 +1,5 @@
 let janelaMaximizada = false;
+let menu = 0;
 
 
 function expandirJanela(janelaID) {
@@ -89,5 +90,89 @@ function expandirJanela(janelaID) {
         box.style.flex = '';
 
         janelaMaximizada = false;
+    }
+}
+
+function selectMenu(select) {
+
+    let buttonPoint = document.getElementById("button_point");
+    let buttonLine = document.getElementById("button_line");
+    let buttonPlane = document.getElementById("button_plane");
+    let button2D = document.getElementById("button_2D");
+    let button3D = document.getElementById("button_3D");
+    let buttonFaq = document.getElementById("button_faq");
+
+    let controlsPoint = document.getElementById("controls_point");
+    let controlsLine = document.getElementById("controls_line");
+    let controlsPlane = document.getElementById("controls_plane");
+    let controls2D = document.getElementById("controls_2D");
+    let controls3D = document.getElementById("controls_3D");
+    let controlsFaq = document.getElementById("controls_faq");
+
+    function clearMenu(){
+        buttonPoint.style.backgroundColor = '';
+        buttonLine.style.backgroundColor = '';
+        buttonPlane.style.backgroundColor = '';
+        button3D.style.backgroundColor = '';
+        button2D.style.backgroundColor = '';
+        buttonFaq.style.backgroundColor = '';
+    
+        controlsPoint.style.display = 'none';
+        controlsLine.style.display = 'none';
+        controlsPlane.style.display = 'none';
+        controls2D.style.display = 'none';
+        controls3D.style.display = 'none';
+        controlsFaq.style.display = 'none';
+    }
+
+    if (menu == 0 || menu != select) {
+
+        clearMenu();
+
+        switch (select) {
+            case 1:
+                buttonPoint.style.backgroundColor = 'gray';
+                controlsPoint.style.display = 'block';
+                menu = 1;
+                break;
+                
+            case 2:
+                buttonLine.style.backgroundColor = 'gray';
+                controlsLine.style.display = 'block';
+                menu = 2;
+                break;
+
+            case 3:
+                buttonPlane.style.backgroundColor = 'gray';
+                controlsPlane.style.display = 'block';
+                menu = 3;
+                break;
+
+            case 4:
+                button2D.style.backgroundColor = 'gray';
+                controls2D.style.display = 'block';
+                menu = 4;
+                break;
+
+            case 5:
+            button3D.style.backgroundColor = 'gray';
+            controls3D.style.display = 'block';
+            menu = 5;
+            break;
+
+            case 6:
+            buttonFaq.style.backgroundColor = 'gray';
+            controlsFaq.style.display = 'block';
+            menu = 6;
+            break;
+            
+            default:
+                break;
+        }
+    } else {
+
+        clearMenu();
+
+        menu = 0;
     }
 }
