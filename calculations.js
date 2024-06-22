@@ -39,3 +39,11 @@ export function findMaxPoints(point1, point2){
 
     return maxPoints;
 }
+
+export function rotateToPlane(shape, plane){
+    const quaternion = plane.geoQuaternion.clone();
+
+    shape.applyQuaternion( quaternion );
+
+    return shape;
+}

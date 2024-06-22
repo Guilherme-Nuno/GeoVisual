@@ -76,19 +76,10 @@ const earthLine2d = earthLine.clone();
 
 // Create example object
 
-const geometryPlane = new THREE.PlaneGeometry(20, 20);
-const colorPlane = new THREE.MeshBasicMaterial( {color: 'aquamarine', side: THREE.DoubleSide, transparent: true, opacity: 0.7} );
-const plane = new THREE.Mesh(geometryPlane, colorPlane);
-plane.rotateX(0.5);
-// plane.rotateZ(1);
-plane.rotateY(1);
-plane.position.set(0,0,0);
-const plane2d = plane.clone();
-
-const tempPoint1 = createPoint(-2, 1, 8, "P");
-const tempPoint2 = createPoint(8, -4, -3, "O");
-const tempPoint3 = createPoint(3, 7, -3, "Q");
-const tempPlane1 = createPlane("a", tempPoint1, tempPoint2, tempPoint3);
+const tempPoint1 = createPoint(4, 0, 0, "R");
+const tempPoint2 = createPoint(1, 7, 2, "S");
+const tempPoint3 = createPoint(-5, -2, -5, "T");
+const tempPlane1 = createPlane("⍺", tempPoint3, tempPoint1, tempPoint2);
 
 // const tempPoint5 = createPoint(-2, 4, 7, "N");
 // const tempPoint4 = createPoint(-4, 3, 2, "M");
@@ -99,7 +90,7 @@ const geometry = new THREE.BoxGeometry(5, 5, 5);
 geometry.rotateX(2);
 geometry.rotateY(1);
 geometry.translate(0, 6, 6);
-const material = new THREE.MeshBasicMaterial( {color: 0x00ffaa, transparent: true, opacity: 0.6} );
+const material = new THREE.MeshBasicMaterial( {color: 0x00ffaa, transparent: true, opacity: 0.6, depthWrite: false} );
 
 const cube = new THREE.Mesh(geometry, material);
 const cube3d = cube.clone();

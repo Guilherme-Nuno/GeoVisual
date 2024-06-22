@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { createLine, createTextLabel } from './create.js';
+import { createLine, createPoint, createTextLabel } from './create.js';
 import { scene2d, scene3d, horizontalPlane, verticalPlane } from './main.js';
 import { intersection, findMaxPoints } from './calculations.js';
 
@@ -52,6 +52,7 @@ export function draw2dPlane (object) {
         verticesHorizontal[0] = object.position.clone();
     }
 
+    // Transform z coordinates into y coordinates to be represented on the diedric projection
     for (let index = 0; index < verticesVertical.length; index++) {
         verticesVertical[index].z = 0;
     }
@@ -75,8 +76,8 @@ export function draw2dPlane (object) {
         group2d.add(lineHorizontal);
 
         // Adicionar texto para linhas
-        const labelVertical1 = createTextLabel(object.name + '1', verticesVertical[0]);
-        const labelHorizontal1 = createTextLabel(object.name + '2', verticesHorizontal[0]);
+        const labelVertical1 = createTextLabel(object.name + '2', verticesVertical[0]);
+        const labelHorizontal1 = createTextLabel(object.name + '1', verticesHorizontal[0]);
         group2d.add(labelVertical1);
         group2d.add(labelHorizontal1);
     }
@@ -134,17 +135,37 @@ export function draw2dPlane (object) {
         const line2HorizontalPoint = intersection(object.geoChild[1], horizontalPlane);
         const line2VerticalPoint = intersection(object.geoChild[1], verticalPlane);
 
+        createPoint(line1HorizontalPoint.x, line1HorizontalPoint.y, line1HorizontalPoint.z, 'H');
+        createPoint(line2HorizontalPoint.x, line2HorizontalPoint.y, line2HorizontalPoint.z, 'H');
+
+        createPoint(line1VerticalPoint.x, line1VerticalPoint.y, line1VerticalPoint.z, 'F');
+        createPoint(line2VerticalPoint.x, line2VerticalPoint.y, line2VerticalPoint.z, 'F');
+
+        const line1HorizontalPoint2d = line1HorizontalPoint.clone();
+        line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;
+        line1HorizontalPoint2d.z = 0;
+
+        const line2HorizontalPoint2d = line2HorizontalPoint.clone();
+        line2HorizontalPoint2d.y = 0 - line2HorizontalPoint2d.z;
+        line2HorizontalPoint2d.z = 0;
+
         // Use points to draw Plane projections
-        const pHorizontalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1HorizontalPoint, line2HorizontalPoint));
-        const lineMaterial = new THREE.LineBasicMaterial( {color: 'black'} );
-        const planeHorizontalLine = new THREE.LineSegments(pHorizontalLine, lineMaterial);
+        const pHorizontalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1HorizontalPoint2d, line2HorizontalPoint2d));
+        const lineMaterialHorizontal = new THREE.LineBasicMaterial( {color: 'black'} );
+        const planeHorizontalLine = new THREE.LineSegments(pHorizontalLine, lineMaterialHorizontal);
 
         group2d.add(planeHorizontalLine);
 
         const pVerticalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1VerticalPoint, line2VerticalPoint));
-        const planeVerticalLine = new THREE.LineSegments(pVerticalLine, lineMaterial);
+        const lineMaterialVertical = new THREE.LineBasicMaterial( {color: 'black'} );
+        const planeVerticalLine = new THREE.LineSegments(pVerticalLine, lineMaterialVertical);
 
         group2d.add(planeVerticalLine);
+
+        const labelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
+        const labelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
+        group2d.add(labelVertical);
+        group2d.add(labelHorizontal);
     }
 
     group2d.geoParent = object;

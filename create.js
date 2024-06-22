@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { findMaxPoints } from './calculations.js';
+import { findMaxPoints, rotateToPlane } from './calculations.js';
 import { draw2dPlane, draw3dPlane } from './draw.js';
 
 const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -144,12 +144,13 @@ export function createPlane(planeName, object1, object2, object3 = 'null'){
     geometryPlane.translate(medX, medY, medZ);
 
     // Add material and mesh
-    const materialPlane = new THREE.MeshBasicMaterial( {color: 'aquamarine', side: THREE.DoubleSide, opacity: 0.5, transparent: true} );
+    const materialPlane = new THREE.MeshBasicMaterial( {color: 'aquamarine', side: THREE.DoubleSide, opacity: 0.3, transparent: true, depthWrite: false} );
     const plane = new THREE.Mesh( geometryPlane, materialPlane);
 
     plane.geoType = "Plane";
     plane.name = planeName;
     plane.geoChild = [line1, line2];
+    plane.geoQuaternion = quaternion;
 
 
     draw2dPlane(plane);
@@ -175,4 +176,28 @@ export function createTextLabel(text, position) {
     sprite.translateY(-1);
 
     return sprite;
+}
+
+function createShapeGeometry( sideSize, sides ) {
+    const radius = sideSize / (2 * Math.sin(Math.PI / sides));
+    
+    const shape = new THREE.CircleGeometry(radius, sides);
+    const shapeGeometry = new THREE.EdgesGeometry(shape);
+
+    return shapeGeometry;
+}
+
+export function createShape( sideSize, sides, position, plane ) {
+    
+    const shapeGeometry = createShapeGeometry( sideSize, sides );
+
+    rotateToPlane( shapeGeometry, plane );
+    shapeGeometry.translate( position.x, position.y, position.z );
+    
+    const shapeEdges = new THREE.EdgesGeometry( shapeGeometry );
+    const shape = new THREE.LineSegments( shapeEdges, new THREE.LineBasicMaterial( { color: 'black' } ) );
+
+    shape.geoType = 'Shape';
+
+    return shape;
 }
