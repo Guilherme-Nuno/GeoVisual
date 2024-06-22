@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <script src="botoes.js"></script>
+<script type="module" src="main.js"></script>
 
 <html lang="pt">
 <head>
@@ -12,12 +13,11 @@
 <body>
     <div class="container">
         <div class="box-container" id="box-container">
-            <div class="vistas" id="vista-3D" onclick="expandirJanela('vista-3D')">
-                <button class="botoes_topo_esq" id="botao-3D">〈〉</button>
-                3D
+            <div class="vistas" id="vista-3D">
+                <button class="botoes_topo_esq" id="botao-3D" onclick="expandirJanela('vista-3D')">〈〉</button>
             </div>
-            <div class="vistas" id="vista-2D" onclick="expandirJanela('vista-2D')">2D
-                <button class="botoes_topo_dir" id="botao-2D">〈〉</button>
+            <div class="vistas" id="vista-2D">
+                <button class="botoes_topo_dir" id="botao-2D" onclick="expandirJanela('vista-2D')">〈〉</button>
             </div>
         </div>
         <div class="controlos" id="controlos">
