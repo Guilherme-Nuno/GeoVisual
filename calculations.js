@@ -47,3 +47,41 @@ export function rotateToPlane(shape, plane){
 
     return shape;
 }
+
+export function findVertices( shape ){
+    const shapeVertices = []; 
+
+    for (let i = 0; i < shape.geometry.attributes.position.count ; i++) {
+        let positionVector = new THREE.Vector3().fromBufferAttribute( shape.geometry.attributes.position, i);
+
+        if (i == 0){
+            shapeVertices.push(positionVector);
+        } else {
+            let exists = false;
+
+            for (let i = 0; i < shapeVertices.length; i++) {
+                if (shapeVertices[i].equals(positionVector)) {
+                    exists = true;
+                    break;
+                } 
+            }
+
+            if (!exists) {
+                shapeVertices.push(positionVector);
+            }
+        }
+    }
+
+    return shapeVertices;
+}
+
+export function findDeviationFromAngle(deviationX, angle) {
+    const oposingAngle = 90 - angle;
+    const deviationZ = ( deviationX * Math.sin(toRad(angle)) ) / Math.sin(toRad(oposingAngle));
+
+    return deviationZ;
+}
+
+function toRad(degrees) {
+    return degrees * (Math.PI / 180);
+}

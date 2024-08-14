@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 
-<script src="botoes.js"></script>
+<script type="module">
+    import * as BUTTON from "./botoes.js";
+
+    window.expandirJanela = BUTTON.expandirJanela;
+    window.selectMenu = BUTTON.selectMenu;
+    window.newPoint = BUTTON.newPoint;
+    window.selectMenuLine = BUTTON.selectMenuLine;
+    window.showPointNameList = BUTTON.showPointNameList;
+    window.showExistingPointList = BUTTON.showExistingPointList;
+    window.newLine = BUTTON.newLine;
+    window.selectMenuPlane = BUTTON.selectMenuPlane;
+    window.newPlane = BUTTON.newPlane;
+</script>
+
 <script type="module" src="main.js"></script>
 
 <html lang="pt">
@@ -29,18 +42,48 @@
             <button class="botoes_controlos_dir" id="button_faq" onclick="selectMenu(6)">FAQ</button>
 
             <div class="controls_point" id="controls_point">
-                <button class="botoes_controlos">NOVO PONTO</button>
+                <label for="coordX">Coordenada X:</label>
+                <input type="number" id="coordX" class="input-coord" placeholder="X">
+            
+                <label for="coordY">Coordenada Y:</label>
+                <input type="number" id="coordY" class="input-coord" placeholder="Y">
+            
+                <label for="coordZ">Coordenada Z:</label> 
+                <input type="number" id="coordZ" class="input-coord" placeholder="Z">
+
+                <label for="name">Nome:</label> 
+                <input list="namePointList" id="name" class="input-coord" placeholder="Name" onfocus="showPointNameList()">
+                <datalist id="namePointList"></datalist>
+            
+                <button class="botoes_controlos" onclick="newPoint()">CRIAR PONTO</button>
             </div>
 
             <div class="controls_line" id="controls_line">
-                <button class="botoes_controlos">Nível</button>
-                <button class="botoes_controlos">Frente</button>
-                <button class="botoes_controlos">Fronto-Horizontal</button>
-                <button class="botoes_controlos">Topo</button>
-                <button class="botoes_controlos">Vertical</button>
-                <button class="botoes_controlos">Passante</button>
+                <button class="botoes_controlos" id="button_line_level" onclick="selectMenuLine(1)">Nível</button>
+                <button class="botoes_controlos" id="button_line_frontal" onclick="selectMenuLine(2)">Frente</button>
+                <button class="botoes_controlos" id="button_line_frontoHorizontal" onclick="selectMenuLine(3)">Fronto-Horizontal</button>
+                <button class="botoes_controlos" id="button_line_topo" onclick="selectMenuLine(4)">Topo</button>
+                <button class="botoes_controlos" id="button_line_vertical" onclick="selectMenuLine(5)">Vertical</button>
+                <button class="botoes_controlos" id="button_line_pass" onclick="selectMenuLine(6)">Passante</button>
                 <button class="botoes_controlos">Oblíqua</button>
                 <button class="botoes_controlos">Perfil</button>
+                <button class="botoes_controlos" id="buttonLinePoint" onclick="selectMenuLine(9)">Pontos</button>
+
+                <div class="controlsLinePoint" id="controlsLinePoint">
+                    <label for="point1Name">Ponto 1:</label> 
+                    <input list="existingPointList" id="point1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                    <datalist id="existingPointList"></datalist>
+
+                    <label for="point2Name">Ponto 2:</label> 
+                    <input list="existingPointList" id="point2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                    <datalist id="existingPointList"></datalist>
+
+                    <label for="angulo">Angulo:</label> 
+                    <input type="number" id="angulo" class="input-coord" placeholder="Angulo">
+
+                    <button class="botoes_controlos" onclick="newLine()">CRIAR RECTA</button>
+                </div>
+                
             </div>
 
             <div class="controls_plane" id="controls_plane">
@@ -52,6 +95,28 @@
                 <button class="botoes_controlos">Rampa</button>
                 <button class="botoes_controlos">Topo</button>
                 <button class="botoes_controlos">Vertical</button>
+                <button class="botoes_controlos">2 Rectas</button>
+                <button class="botoes_controlos">Recta e Ponto</button>
+                <button class="botoes_controlos" id="buttonPlanePoints" onclick="selectMenuPlane(11)">3 Pontos</button>
+
+                <div class="controlsPlaneLines" id="controlsPlaneLines">
+
+                </div>
+                <div class="controlsPlanePoints" id="controlsPlanePoints">
+                    <label for="point1">Ponto 1:</label> 
+                    <input list="existingPointList" id="planePoint1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                    <datalist id="existingPointList"></datalist>
+
+                    <label for="point1">Ponto 2:</label> 
+                    <input list="existingPointList" id="planePoint2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                    <datalist id="existingPointList"></datalist>
+
+                    <label for="point1">Ponto 3:</label> 
+                    <input list="existingPointList" id="planePoint3Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                    <datalist id="existingPointList"></datalist>
+
+                    <button class="botoes_controlos" onclick="newPlane()">CRIAR PLANO</button>
+                </div>
             </div>
 
             <div class="controls_2D" id="controls_2D">

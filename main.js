@@ -1,6 +1,12 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.124.0/examples/jsm/controls/OrbitControls.js';
-import { createPoint, createLine, createPlane } from './create.js';
+import { createPoint, createLine, createPlane, createShape } from './create.js';
+import { draw2dPlane } from './draw.js';
+
+// Global Variables
+let vistas3D = document.getElementById("vista-3D");
+export const viewWidth = vistas3D.clientWidth;
+export const viewHeigth = vistas3D.clientHeight;
 
 const container3DView = document.querySelector('#vista-3D');
 const container2DView = document.querySelector('#vista-2D');
@@ -46,8 +52,8 @@ controls3D.update();
 // Create geometry for 3d planes
 const geometryHorizontalPlane = new THREE.PlaneGeometry(30,30);
 const geometryVerticalPlane = new THREE.PlaneGeometry(30,30);
-const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6} );
-const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6} );
+const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
 export const horizontalPlane = new THREE.Mesh( geometryHorizontalPlane, colorHorizontalPlane);
 export const verticalPlane = new THREE.Mesh( geometryVerticalPlane, colorVerticalPlane);
 
@@ -76,10 +82,11 @@ const earthLine2d = earthLine.clone();
 
 // Create example object
 
-const tempPoint1 = createPoint(4, 0, 0, "R");
-const tempPoint2 = createPoint(1, 7, 2, "S");
-const tempPoint3 = createPoint(-5, -2, -5, "T");
-const tempPlane1 = createPlane("⍺", tempPoint3, tempPoint1, tempPoint2);
+// const tempPoint1 = createPoint(4, 5, 5, "R", false);
+// const tempPoint2 = createPoint(1, 1, 7, "S", false);
+// const tempPoint3 = createPoint(-3, -2, 3, "T", false);
+// const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
+// const tempShape = createShape( 4, 5, tempPoint3.position, tempPlane1 );
 
 // const tempPoint5 = createPoint(-2, 4, 7, "N");
 // const tempPoint4 = createPoint(-4, 3, 2, "M");
@@ -149,4 +156,8 @@ function animate() {
 
 	renderer3d.render(scene3d, camera3d);
     renderer2d.render(scene2d, camera2d);
+}
+
+export function findVectorByName( name ){
+    return scene3d.getObjectByName( name );
 }
