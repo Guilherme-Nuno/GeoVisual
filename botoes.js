@@ -1,8 +1,71 @@
+import { viewHeigth, viewWidth, findVectorByName } from "./main.js";
+import { createPoint, pointNamesList, existingPointList, createLine, createPlane } from "./create.js";
+import { findDeviationFromAngle } from "./calculations.js";
+
 let janelaMaximizada = false;
 let menu = 0;
+let menuLine = 0;
+let menuPlane = 0;
 
+// First menu
+const buttonPoint = document.getElementById("button_point");
+const buttonLine = document.getElementById("button_line");
+const buttonPlane = document.getElementById("button_plane");
+const button2D = document.getElementById("button_2D");
+const button3D = document.getElementById("button_3D");
+const buttonFaq = document.getElementById("button_faq");
 
-function expandirJanela(janelaID) {
+const controlsPoint = document.getElementById("controls_point");
+const controlsLine = document.getElementById("controls_line");
+const controlsPlane = document.getElementById("controls_plane");
+const controls2D = document.getElementById("controls_2D");
+const controls3D = document.getElementById("controls_3D");
+const controlsFaq = document.getElementById("controls_faq");
+
+// Line menu
+const buttonLineLevel = document.getElementById("button_line_level");
+const buttonLinePoint = document.getElementById("buttonLinePoint");
+const buttonLineFrontal = document.getElementById("button_line_frontal");
+const buttonLineFrontoHorizontal = document.getElementById("button_line_frontoHorizontal");
+const buttonLineTopo = document.getElementById("button_line_topo");
+const buttonLineVertical = document.getElementById("button_line_vertical");
+
+const controlsLineLevel = document.getElementById("controls_line_level");
+const controlsLinePoint = document.getElementById("controlsLinePoint");
+const point1Name = document.getElementById("point1Name");
+const point2Name = document.getElementById("point2Name");
+const angle = document.getElementById("angulo");
+
+// Plane menu
+const buttonPlanePoints = document.getElementById("buttonPlanePoints");
+
+const controlsPlanePoints = document.getElementById("controlsPlanePoints");
+
+export function showPointNameList(){
+    const datalist = document.getElementById("namePointList");
+
+    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+
+    pointNamesList.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        datalist.appendChild(option);
+    });
+}
+
+export function showExistingPointList(){
+    const datalist = document.getElementById("existingPointList");
+
+    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+
+    existingPointList.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        datalist.appendChild(option);
+    });
+}
+
+export function expandirJanela(janelaID) {
 
     let vistas3D = document.getElementById("vista-3D");
     let vistas2D = document.getElementById("vista-2D");
@@ -65,16 +128,16 @@ function expandirJanela(janelaID) {
         vistas3D.style.position = '';
         vistas3D.style.top = '';
         vistas3D.style.left = '';
-        vistas3D.style.width = '';
-        vistas3D.style.height = '';
+        vistas3D.style.width = viewWidth;
+        vistas3D.style.height = viewHeigth;
         vistas3D.style.flex = '';
         vistas3D.style.zIndex = '';
 
         vistas2D.style.position = '';
         vistas2D.style.top = '';
         vistas2D.style.right = '';
-        vistas2D.style.width = '';
-        vistas2D.style.height = '';
+        vistas2D.style.width = viewWidth;
+        vistas2D.style.height = viewHeigth;
         vistas2D.style.flex = '';
         vistas2D.style.zIndex = '';
 
@@ -93,37 +156,7 @@ function expandirJanela(janelaID) {
     }
 }
 
-function selectMenu(select) {
-
-    let buttonPoint = document.getElementById("button_point");
-    let buttonLine = document.getElementById("button_line");
-    let buttonPlane = document.getElementById("button_plane");
-    let button2D = document.getElementById("button_2D");
-    let button3D = document.getElementById("button_3D");
-    let buttonFaq = document.getElementById("button_faq");
-
-    let controlsPoint = document.getElementById("controls_point");
-    let controlsLine = document.getElementById("controls_line");
-    let controlsPlane = document.getElementById("controls_plane");
-    let controls2D = document.getElementById("controls_2D");
-    let controls3D = document.getElementById("controls_3D");
-    let controlsFaq = document.getElementById("controls_faq");
-
-    function clearMenu(){
-        buttonPoint.style.backgroundColor = '';
-        buttonLine.style.backgroundColor = '';
-        buttonPlane.style.backgroundColor = '';
-        button3D.style.backgroundColor = '';
-        button2D.style.backgroundColor = '';
-        buttonFaq.style.backgroundColor = '';
-    
-        controlsPoint.style.display = 'none';
-        controlsLine.style.display = 'none';
-        controlsPlane.style.display = 'none';
-        controls2D.style.display = 'none';
-        controls3D.style.display = 'none';
-        controlsFaq.style.display = 'none';
-    }
+export function selectMenu(select) {
 
     if (menu == 0 || menu != select) {
 
@@ -131,28 +164,28 @@ function selectMenu(select) {
 
         switch (select) {
             case 1:
-                buttonPoint.style.backgroundColor = 'gray';
-                controlsPoint.style.display = 'block';
-                menu = 1;
-                break;
+            buttonPoint.style.backgroundColor = 'gray';
+            controlsPoint.style.display = 'block';
+            menu = 1;
+            break;
                 
             case 2:
-                buttonLine.style.backgroundColor = 'gray';
-                controlsLine.style.display = 'block';
-                menu = 2;
-                break;
+            buttonLine.style.backgroundColor = 'gray';
+            controlsLine.style.display = 'block';
+            menu = 2;
+            break;
 
             case 3:
-                buttonPlane.style.backgroundColor = 'gray';
-                controlsPlane.style.display = 'block';
-                menu = 3;
-                break;
+            buttonPlane.style.backgroundColor = 'gray';
+            controlsPlane.style.display = 'block';
+            menu = 3;
+            break;
 
             case 4:
-                button2D.style.backgroundColor = 'gray';
-                controls2D.style.display = 'block';
-                menu = 4;
-                break;
+            button2D.style.backgroundColor = 'gray';
+            controls2D.style.display = 'block';
+            menu = 4;
+            break;
 
             case 5:
             button3D.style.backgroundColor = 'gray';
@@ -167,7 +200,7 @@ function selectMenu(select) {
             break;
             
             default:
-                break;
+            break;
         }
     } else {
 
@@ -175,4 +208,235 @@ function selectMenu(select) {
 
         menu = 0;
     }
+}
+
+export function newPoint(){
+    const coordX = +document.getElementById('coordX').value;
+    const coordY = +document.getElementById('coordY').value;
+    const coordZ = +document.getElementById('coordZ').value;
+    const name = document.getElementById('name').value;
+
+    createPoint(coordX, coordY, coordZ, name);
+
+    document.getElementById('coordX').value = '';
+    document.getElementById('coordY').value = '';
+    document.getElementById('coordZ').value = '';
+    document.getElementById('name').value = '';
+}
+
+export function newLine(){
+    const point1 = findVectorByName( point1Name.value );
+    const point2 = findVectorByName( point2Name.value );
+    const pointAngle = +angle.value;
+    const rigthOpening = true;
+    
+    let newX, newY, newZ, pointTemp;
+
+    switch (menuLine) {
+        case 1:
+            newZ = findDeviationFromAngle(2, pointAngle) + point1.position.z;
+            newY = point1.position.y;
+            
+            if (point1.position.z >0 ) {
+                if (rigthOpening) {
+                    newX = point1.position.x + 2;
+                } else{
+                    newX = point1.position.x - 2;
+                }
+            } else {
+                if (rigthOpening) {
+                    newX = point1.position.x - 2;
+                } else{
+                    newX = point1.position.x + 2;
+                }
+            }
+
+            pointTemp = createPoint(newX, newY, newZ, "", false);
+
+            createLine(point1, pointTemp);
+            break;
+
+            case 2:
+                newY = findDeviationFromAngle(2, pointAngle) + point1.position.y;
+                newZ = point1.position.z;
+                
+                if (point1.position.y > 0 ) {
+                    if (rigthOpening) {
+                        newX = point1.position.x + 2;
+                    } else{
+                        newX = point1.position.x - 2;
+                    }
+                } else {
+                    if (rigthOpening) {
+                        newX = point1.position.x - 2;
+                    } else{
+                        newX = point1.position.x + 2;
+                    }
+                }
+    
+                pointTemp = createPoint(newX, newY, newZ, "", false);
+    
+                createLine(point1, pointTemp);
+                break;
+
+            case 3:
+                newX = point1.position.x + 2;
+
+                pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
+
+                createLine( point1, pointTemp);
+                break;
+
+            case 4:
+                newZ = point1.position.z + 2;
+
+                pointTemp = createPoint(point1.position.x, point1.position.y, newZ, "", false);
+
+                createLine( point1, pointTemp);
+                break;
+            
+            case 5:
+                newY = point1.position.y + 2;
+
+                pointTemp = createPoint(point1.position.x, newY, point1.position.z, "", false);
+
+                createLine( point1, pointTemp);
+                break;
+
+        case 9:
+            if (point1 != point2) {
+                createLine( point1, point2);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+export function newPlane() {
+    const point1Name = document.getElementById('planePoint1Name').value;
+    const point2Name = document.getElementById('planePoint2Name').value;
+    const point3Name = document.getElementById('planePoint3Name').value;
+
+    if (point1Name != point2Name && point2Name != point3Name && point1Name != point3Name) {
+        const point1 = findVectorByName( point1Name );
+        const point2 = findVectorByName( point2Name );
+        const point3 = findVectorByName( point3Name );
+
+        createPlane(point1, point2, point3);
+    }
+}
+
+export function selectMenuLine( select ){
+    if (menuLine == 0 || menuLine != select) {
+
+        clearMenuLine();
+
+        switch (select) {
+            case 1:
+                buttonLineLevel.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                point2Name.style.display = 'none';
+                menuLine = select;
+            break;
+            case 2:
+                buttonLineFrontal.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                point2Name.style.display = 'none';
+                menuLine = select;
+            break;
+            case 3:
+                buttonLineFrontoHorizontal.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                point2Name.style.display = 'none';
+                angle.style.display = 'none';
+                menuLine = select;
+            break;
+            case 4:
+                buttonLineTopo.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                point2Name.style.display = 'none';
+                angle.style.display = 'none';
+                menuLine = select;
+            break;
+            case 5:
+                buttonLineVertical.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                point2Name.style.display = 'none';
+                angle.style.display = 'none';
+                menuLine = select;
+            break;
+            case 9:
+                buttonLinePoint.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                angle.style.display = 'none';
+                menuLine = select;
+                break;
+            default:
+                break;
+        }
+    } else {
+        clearMenuLine();
+        menuLine = 0;
+    }
+}
+
+export function selectMenuPlane( select ) {
+    if (menuPlane == 0 || menuPlane != select) {
+        clearMenuPlane();
+
+        switch (select) {
+            case 11:
+                buttonPlanePoints.style.background = 'gray';
+                controlsPlanePoints.style.display = 'block';
+                menuPlane = select;
+                break;
+            
+            default:
+                break;
+        }
+    } else {
+        clearMenuPlane();
+        menuPlane = 0;
+    }
+}
+
+function clearMenu(){
+    buttonPoint.style.backgroundColor = '';
+    buttonLine.style.backgroundColor = '';
+    buttonPlane.style.backgroundColor = '';
+    button3D.style.backgroundColor = '';
+    button2D.style.backgroundColor = '';
+    buttonFaq.style.backgroundColor = '';
+
+    controlsPoint.style.display = 'none';
+    controlsLine.style.display = 'none';
+    controlsPlane.style.display = 'none';
+    controls2D.style.display = 'none';
+    controls3D.style.display = 'none';
+    controlsFaq.style.display = 'none';
+
+    clearMenuLine();
+    clearMenuPlane();
+}
+
+function clearMenuLine(){
+    buttonLineLevel.style.backgroundColor = '';
+    buttonLinePoint.style.backgroundColor = '';
+    buttonLineFrontal.style.backgroundColor = '';
+    buttonLineFrontoHorizontal.style.backgroundColor = '';
+    buttonLineTopo.style.backgroundColor = '';
+    buttonLineVertical.style.backgroundColor = '';
+
+    controlsLinePoint.style.display = 'none';
+    controlsLineLevel.style.display = 'none';
+
+    point2Name.style.display = '';
+    angle.style.display = '';
+}
+
+function clearMenuPlane() {
+    buttonPlanePoints.style.backgroundColor = '';
+
+    controlsPlanePoints.style.display = 'none';
 }

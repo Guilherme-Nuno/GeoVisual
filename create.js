@@ -1,15 +1,33 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { findMaxPoints, rotateToPlane } from './calculations.js';
+import { findMaxPoints, findVertices, rotateToPlane } from './calculations.js';
 import { draw2dPlane, draw3dPlane } from './draw.js';
+import { scene3d } from './main.js';
 
-const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+export const pointNamesList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+export const existingPointList = [];
+export const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+export const existingLineList = [];
 const planeNamesList = ['⍺', '⍵', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
-export function createPoint(coordinateX, coordinateY, coordinateZ, pointName){
+export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, draw = true){
     // Creates geometry, Material and the mesh
     const pointGeometry = new THREE.SphereGeometry(0.1,12);
     const pointMaterial = new THREE.MeshBasicMaterial( {color: 'black'} );
     const point = new THREE.Mesh(pointGeometry, pointMaterial);
+
+    if (draw) {
+        if ( pointName == "null") {
+            pointName = pointNamesList.shift();
+        } else {
+            const indexName = pointNamesList.findIndex(name => name === pointName);
+            if (indexName == -1) {
+                pointName = pointNamesList.shift();
+            } else {
+                pointNamesList.splice(indexName, 1);
+            }
+        }
+        existingPointList.push(pointName);
+    }
 
     const groupPoint = new THREE.Group();
 
@@ -30,13 +48,15 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName){
     // Sets position
     point.position.set( coordinateX, coordinateY, coordinateZ);
 
-    draw3dPlane(point);
-    draw2dPlane(point);
+    if (draw){
+        draw3dPlane(point);
+        draw2dPlane(point);
+    }
 
     return point;
 }
 
-export function createLine(point1, point2, lineName = "null"){
+export function createLine(point1, point2, lineName = "null", draw = true){
     
     let point1Position, point2Position;
     // Creates geometry, Material and the mesh
@@ -56,15 +76,18 @@ export function createLine(point1, point2, lineName = "null"){
     const lineMaterial = new THREE.LineBasicMaterial( {color: 'black'} );
     const line = new THREE.LineSegments(lineGeometry, lineMaterial);
 
-    if (lineName == "null") {
-        lineName = lineNamesList.shift();
-    } else {
-        const indexName = lineNamesList.findIndex(name => name === lineName);
-        if (indexName == -1) {
+    if (draw) {
+        if (lineName == "null") {
             lineName = lineNamesList.shift();
         } else {
-            lineNamesList.splice(indexName, 1);
+            const indexName = lineNamesList.findIndex(name => name === lineName);
+            if (indexName == -1) {
+                lineName = lineNamesList.shift();
+            } else {
+                lineNamesList.splice(indexName, 1);
+            }
         }
+        existingLineList.push(lineName);
     }
 
     // Adds name and new parameters geo
@@ -77,13 +100,15 @@ export function createLine(point1, point2, lineName = "null"){
     line.geoParalelVerticalPlane = "false";
     line.geoParalelHorizontalPlane = "false";
 
-    draw3dPlane(line);
-    draw2dPlane(line);
+    if ( draw ){
+        draw3dPlane(line);
+        draw2dPlane(line);
+    }
 
     return line;
 }
 
-export function createPlane(planeName, object1, object2, object3 = 'null'){
+export function createPlane(object1, object2, object3 = 'null'){
     let line1;
     let line2;
 
@@ -97,8 +122,8 @@ export function createPlane(planeName, object1, object2, object3 = 'null'){
         line1 = object1.clone();
         line2 = createLine( object1.position.clone(), object2.position.clone()); //Problem Line position
     } else {
-        line1 = createLine( object1.position.clone(), object2.position.clone());
-        line2 = createLine( object1.position.clone(), object3.position.clone());
+        line1 = createLine( object1.position.clone(), object2.position.clone(), "" , false);
+        line2 = createLine( object1.position.clone(), object3.position.clone(), "" , false);
     }
 
     // Calculate normal of plane
@@ -117,7 +142,7 @@ export function createPlane(planeName, object1, object2, object3 = 'null'){
         if (line2Normal.x == 0 && line2Normal.y == 0 && line2Normal.z == 0) {
             planeNormal = new THREE.Vector3().crossVectors(line1Point1, line2Point1).normalize();
         } else {
-        planeNormal = new THREE.Vector3().crossVectors(line1Point1, line2Normal).normalize();
+            planeNormal = new THREE.Vector3().crossVectors(line1Point1, line2Normal).normalize();
         }
 
     } else {
@@ -125,7 +150,7 @@ export function createPlane(planeName, object1, object2, object3 = 'null'){
         if (line2Normal.x == 0 && line2Normal.y == 0 && line2Normal.z == 0) {
             planeNormal = new THREE.Vector3().crossVectors(line1Normal, line2Point1).normalize();
         } else {
-        planeNormal = new THREE.Vector3().crossVectors(line1Normal, line2Normal).normalize();
+            planeNormal = new THREE.Vector3().crossVectors(line1Normal, line2Normal).normalize();
         }
     }
 
@@ -148,7 +173,7 @@ export function createPlane(planeName, object1, object2, object3 = 'null'){
     const plane = new THREE.Mesh( geometryPlane, materialPlane);
 
     plane.geoType = "Plane";
-    plane.name = planeName;
+    // plane.name = planeName;
     plane.geoChild = [line1, line2];
     plane.geoQuaternion = quaternion;
 
@@ -178,26 +203,59 @@ export function createTextLabel(text, position) {
     return sprite;
 }
 
-function createShapeGeometry( sideSize, sides ) {
-    const radius = sideSize / (2 * Math.sin(Math.PI / sides));
-    
-    const shape = new THREE.CircleGeometry(radius, sides);
-    const shapeGeometry = new THREE.EdgesGeometry(shape);
+function createShapeGeometry( sideSize, sides, length ) {
 
-    return shapeGeometry;
+    const radius = sideSize / (2 * Math.sin(Math.PI / sides));
+
+    if (length == null) {
+        const shape = new THREE.CircleGeometry(radius, sides);
+
+        return shape;
+        
+    } else {
+        const shape = new THREE.CylinderGeometry( radius, radius, length, sides);
+
+        return shape;
+    }
 }
 
 export function createShape( sideSize, sides, position, plane ) {
     
     const shapeGeometry = createShapeGeometry( sideSize, sides );
+    
 
     rotateToPlane( shapeGeometry, plane );
     shapeGeometry.translate( position.x, position.y, position.z );
-    
+
     const shapeEdges = new THREE.EdgesGeometry( shapeGeometry );
     const shape = new THREE.LineSegments( shapeEdges, new THREE.LineBasicMaterial( { color: 'black' } ) );
 
+    shape.geoVertices = findVertices( shape );
     shape.geoType = 'Shape';
 
+    draw3dPlane(shape);
+    draw2dPlane(shape);
+
+    scene3d.add(shape);
+
     return shape;
+}
+
+export function createLineSegment( point1, point2 ){
+    const tempPoint1 = point1.clone();
+    const tempPoint2 = point2.clone();
+
+    const lineSegmentGeometry = new THREE.BufferGeometry().setFromPoints( [tempPoint1, tempPoint2] );
+    const lineSegment = new THREE.LineSegments(lineSegmentGeometry, new THREE.LineBasicMaterial( {color: 'black' } ) );
+
+    lineSegment.geoType = 'LineSegment';
+
+    draw3dPlane(lineSegment);
+    draw2dPlane(lineSegment);
+
+    return lineSegment;
+}
+
+export function createSolid( sideSize, sides, position, plane, length){
+    
 }
