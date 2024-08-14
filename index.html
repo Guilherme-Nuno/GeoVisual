@@ -65,21 +65,48 @@
                 <button class="botoes_controlos" id="button_line_topo" onclick="selectMenuLine(4)">Topo</button>
                 <button class="botoes_controlos" id="button_line_vertical" onclick="selectMenuLine(5)">Vertical</button>
                 <button class="botoes_controlos" id="button_line_pass" onclick="selectMenuLine(6)">Passante</button>
-                <button class="botoes_controlos">Oblíqua</button>
-                <button class="botoes_controlos">Perfil</button>
+                <button class="botoes_controlos" id="button_line_oblique" onclick="selectMenuLine(7)">Oblíqua</button>
+                <button class="botoes_controlos" id="button_line_perfil" onclick="selectMenuLine(8)">Perfil</button>
                 <button class="botoes_controlos" id="buttonLinePoint" onclick="selectMenuLine(9)">Pontos</button>
 
                 <div class="controlsLinePoint" id="controlsLinePoint">
-                    <label for="point1Name">Ponto 1:</label> 
-                    <input list="existingPointList" id="point1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                    <datalist id="existingPointList"></datalist>
-
-                    <label for="point2Name">Ponto 2:</label> 
-                    <input list="existingPointList" id="point2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                    <datalist id="existingPointList"></datalist>
-
-                    <label for="angulo">Angulo:</label> 
-                    <input type="number" id="angulo" class="input-coord" placeholder="Angulo">
+                    <span id="spanPoint1Name">
+                        Ponto 1: 
+                        <input list="existingPointList" id="point1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                        <datalist id="existingPointList"></datalist>
+                    </span>
+                    <span id="spanPoint2Name">
+                        Ponto 2:
+                        <input list="existingPointList" id="point2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
+                        <datalist id="existingPointList"></datalist>
+                    </span>
+                    <span id="spanAngulo">
+                        Angulo:
+                        <input type="number" id="angulo" class="input-coord" placeholder="Angulo">
+                        Abertura:
+                        <select id="angleSelect">
+                            <option value="Rigth">Direita</option>
+                            <option value="Left">Esquerda</option>
+                        </select>
+                    </span>
+                    <span id="spanAnglePHP">
+                        Angulo PHP:
+                        <input type="number" id="anglePHP" class="input-coord" placeholder="Angulo PHP">
+                        Abertura:
+                        <select id="phpSelect">
+                            <option value="Rigth">Direita</option>
+                            <option value="Left">Esquerda</option>
+                        </select>
+                    </span>
+                    <span id="spanAnglePFP">
+                        Angulo PFP:
+                        <input type="number" id="anglePFP" class="input-coord" placeholder="Angulo PHP">
+                        Abertura:
+                        <select id="pfpSelect">
+                            <option value="Rigth">Direita</option>
+                            <option value="Left">Esquerda</option>
+                        </select>
+                    </span>
 
                     <button class="botoes_controlos" onclick="newLine()">CRIAR RECTA</button>
                 </div>
