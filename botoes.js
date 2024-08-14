@@ -241,7 +241,13 @@ export function newLine(){
     const point1 = findVectorByName( point1Name.value );
     const point2 = findVectorByName( point2Name.value );
     const pointAngle = +angle.value;
-    const rigthOpening = true;
+    let rigthOpening;
+
+    if (angleSelect.value == 'rigth') {
+        rigthOpening = true;
+    } else {
+        rigthOpening = false;
+    }
     
     let newX, newY, newZ, pointTemp;
 
