@@ -241,12 +241,26 @@ export function newLine(){
     const point1 = findVectorByName( point1Name.value );
     const point2 = findVectorByName( point2Name.value );
     const pointAngle = +angle.value;
-    let rigthOpening;
+    const phpAngle = +anglePHP.value;
+    const pfpAngle = +anglePFP.value;
+    let rigthOpening, rigthOpeningPHP, rigthOpeningPFP;
 
     if (angleSelect.value == 'rigth') {
         rigthOpening = true;
     } else {
         rigthOpening = false;
+    }
+
+    if (phpSelect.value == 'rigth') {
+        rigthOpeningPHP = true;
+    } else {
+        rigthOpeningPHP = false;
+    }
+
+    if (pfpSelect.value == 'rigth') {
+        rigthOpeningPFP = true;
+    } else {
+        rigthOpeningPFP = false;
     }
     
     let newX, newY, newZ, pointTemp;
@@ -256,18 +270,10 @@ export function newLine(){
             newZ = findDeviationFromAngle(2, pointAngle) + point1.position.z;
             newY = point1.position.y;
             
-            if (point1.position.z >0 ) {
-                if (rigthOpening) {
-                    newX = point1.position.x + 2;
-                } else{
-                    newX = point1.position.x - 2;
-                }
-            } else {
-                if (rigthOpening) {
-                    newX = point1.position.x - 2;
-                } else{
-                    newX = point1.position.x + 2;
-                }
+            if (rigthOpening) {
+                newX = point1.position.x - 2;
+            } else{
+                newX = point1.position.x + 2;
             }
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
@@ -279,18 +285,10 @@ export function newLine(){
             newY = findDeviationFromAngle(2, pointAngle) + point1.position.y;
             newZ = point1.position.z;
             
-            if (point1.position.y > 0 ) {
-                if (rigthOpening) {
-                    newX = point1.position.x + 2;
-                } else{
-                    newX = point1.position.x - 2;
-                }
-            } else {
-                if (rigthOpening) {
-                    newX = point1.position.x - 2;
-                } else{
-                    newX = point1.position.x + 2;
-                }
+            if (rigthOpening) {
+                newX = point1.position.x - 2;
+            } else{
+                newX = point1.position.x + 2;
             }
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
@@ -299,7 +297,7 @@ export function newLine(){
         break;
 
         case 3:
-            newX = point1.position.x + 2;
+            newX = point1.position.x - 2;
 
             pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
 
@@ -324,6 +322,28 @@ export function newLine(){
 
         case 6:
             createLine( createPoint(0,0,0,'',false), createPoint(1,0,0,'',false) );
+        break;
+
+        case 7:
+            if (point1Name.value != '' && point2Name.value != '') {
+                createLine(point1, point2);
+            } else {
+                if (rigthOpeningPHP) {
+                    newY = point1.position.y + findDeviationFromAngle( 2, phpAngle);
+                } else{
+                    newY =point1.position.y - findDeviationFromAngle( 2, phpAngle);
+                }
+                if (rigthOpeningPFP) {
+                    newZ = point1.position.z + findDeviationFromAngle( 2, pfpAngle);
+                } else{
+                    newZ =point1.position.z - findDeviationFromAngle( 2, pfpAngle);
+                }
+                
+                newX = point1.position.x - 2;
+
+                pointTemp = createPoint(newX, newY, newZ, '', false);
+                createLine( point1, pointTemp);
+            }
         break;
 
         case 9:
