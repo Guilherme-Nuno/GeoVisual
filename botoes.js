@@ -2,10 +2,16 @@ import { viewHeigth, viewWidth, findVectorByName } from "./main.js";
 import { createPoint, pointNamesList, existingPointList, createLine, createPlane } from "./create.js";
 import { findDeviationFromAngle } from "./calculations.js";
 
+// Event Listeners
+document.getElementById("objectType1").addEventListener("change", updateOnFocusObject1);
+document.getElementById("objectType2").addEventListener("change", updateOnFocusObject2);
+
+// Variables
 let janelaMaximizada = false;
 let menu = 0;
 let menuLine = 0;
 let menuPlane = 0;
+let menuPoint = 0;
 
 // First menu
 const buttonPoint = document.getElementById("button_point");
@@ -22,6 +28,15 @@ const controls2D = document.getElementById("controls_2D");
 const controls3D = document.getElementById("controls_3D");
 const controlsFaq = document.getElementById("controls_faq");
 
+// Point menu
+const buttonPointNew = document.getElementById("buttonPointNew");
+const buttonPointIntersection = document.getElementById("buttonPointIntersection");
+const buttonPointNotable = document.getElementById("buttonPointNotable");
+
+const controlsPointNew = document.getElementById("controls_point_new");
+const controlsPointIntersection = document.getElementById("controlsPointIntersection");
+const controlsPointNotable = document.getElementById("controlsPointNotable");
+
 // Line menu
 const buttonLineLevel = document.getElementById("button_line_level");
 const buttonLinePoint = document.getElementById("buttonLinePoint");
@@ -29,12 +44,25 @@ const buttonLineFrontal = document.getElementById("button_line_frontal");
 const buttonLineFrontoHorizontal = document.getElementById("button_line_frontoHorizontal");
 const buttonLineTopo = document.getElementById("button_line_topo");
 const buttonLineVertical = document.getElementById("button_line_vertical");
+const buttonLinePass = document.getElementById("button_line_pass");
+const buttonLineOblique = document.getElementById("button_line_oblique");
+const buttonLinePerfil = document.getElementById("button_line_perfil");
 
-const controlsLineLevel = document.getElementById("controls_line_level");
+const spanPoint1Name = document.getElementById("spanPoint1Name");
+const spanPoint2Name = document.getElementById("spanPoint2Name");
+const spanAngle = document.getElementById("spanAngulo");
+const spanAnglePHP = document.getElementById("spanAnglePHP");
+const spanAnglePFP = document.getElementById("spanAnglePFP");
+
 const controlsLinePoint = document.getElementById("controlsLinePoint");
 const point1Name = document.getElementById("point1Name");
 const point2Name = document.getElementById("point2Name");
 const angle = document.getElementById("angulo");
+const anglePHP = document.getElementById("anglePHP");
+const anglePFP = document.getElementById("anglePFP");
+const angleSelect = document.getElementById("angleSelect");
+const phpSelect = document.getElementById("phpSelect");
+const pfpSelect = document.getElementById("pfpSelect");
 
 // Plane menu
 const buttonPlanePoints = document.getElementById("buttonPlanePoints");
@@ -53,8 +81,8 @@ export function showPointNameList(){
     });
 }
 
-export function showExistingPointList(){
-    const datalist = document.getElementById("existingPointList");
+export function showExistingPointList(datalistId){
+    const datalist = document.getElementById(datalistId);
 
     while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
 
@@ -228,7 +256,27 @@ export function newLine(){
     const point1 = findVectorByName( point1Name.value );
     const point2 = findVectorByName( point2Name.value );
     const pointAngle = +angle.value;
-    const rigthOpening = true;
+    const phpAngle = +anglePHP.value;
+    const pfpAngle = +anglePFP.value;
+    let rigthOpening, rigthOpeningPHP, rigthOpeningPFP;
+
+    if (angleSelect.value == 'rigth') {
+        rigthOpening = true;
+    } else {
+        rigthOpening = false;
+    }
+
+    if (phpSelect.value == 'rigth') {
+        rigthOpeningPHP = true;
+    } else {
+        rigthOpeningPHP = false;
+    }
+
+    if (pfpSelect.value == 'rigth') {
+        rigthOpeningPFP = true;
+    } else {
+        rigthOpeningPFP = false;
+    }
     
     let newX, newY, newZ, pointTemp;
 
@@ -237,79 +285,92 @@ export function newLine(){
             newZ = findDeviationFromAngle(2, pointAngle) + point1.position.z;
             newY = point1.position.y;
             
-            if (point1.position.z >0 ) {
-                if (rigthOpening) {
-                    newX = point1.position.x + 2;
-                } else{
-                    newX = point1.position.x - 2;
-                }
-            } else {
-                if (rigthOpening) {
-                    newX = point1.position.x - 2;
-                } else{
-                    newX = point1.position.x + 2;
-                }
+            if (rigthOpening) {
+                newX = point1.position.x - 2;
+            } else{
+                newX = point1.position.x + 2;
             }
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
 
             createLine(point1, pointTemp);
-            break;
+        break;
 
-            case 2:
-                newY = findDeviationFromAngle(2, pointAngle) + point1.position.y;
-                newZ = point1.position.z;
-                
-                if (point1.position.y > 0 ) {
-                    if (rigthOpening) {
-                        newX = point1.position.x + 2;
-                    } else{
-                        newX = point1.position.x - 2;
-                    }
-                } else {
-                    if (rigthOpening) {
-                        newX = point1.position.x - 2;
-                    } else{
-                        newX = point1.position.x + 2;
-                    }
-                }
-    
-                pointTemp = createPoint(newX, newY, newZ, "", false);
-    
-                createLine(point1, pointTemp);
-                break;
-
-            case 3:
-                newX = point1.position.x + 2;
-
-                pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
-
-                createLine( point1, pointTemp);
-                break;
-
-            case 4:
-                newZ = point1.position.z + 2;
-
-                pointTemp = createPoint(point1.position.x, point1.position.y, newZ, "", false);
-
-                createLine( point1, pointTemp);
-                break;
+        case 2:
+            newY = findDeviationFromAngle(2, pointAngle) + point1.position.y;
+            newZ = point1.position.z;
             
-            case 5:
-                newY = point1.position.y + 2;
+            if (rigthOpening) {
+                newX = point1.position.x - 2;
+            } else{
+                newX = point1.position.x + 2;
+            }
 
-                pointTemp = createPoint(point1.position.x, newY, point1.position.z, "", false);
+            pointTemp = createPoint(newX, newY, newZ, "", false);
 
+            createLine(point1, pointTemp);
+        break;
+
+        case 3:
+            newX = point1.position.x - 2;
+
+            pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
+
+            createLine( point1, pointTemp);
+        break;
+
+        case 4:
+            newZ = point1.position.z + 2;
+
+            pointTemp = createPoint(point1.position.x, point1.position.y, newZ, "", false);
+
+            createLine( point1, pointTemp);
+        break;
+        
+        case 5:
+            newY = point1.position.y + 2;
+
+            pointTemp = createPoint(point1.position.x, newY, point1.position.z, "", false);
+
+            createLine( point1, pointTemp);
+        break;
+
+        case 6:
+            createLine( createPoint(0,0,0,'',false), createPoint(1,0,0,'',false) );
+        break;
+
+        case 7:
+            if (point1Name.value != '' && point2Name.value != '') {
+                createLine(point1, point2);
+            } else {
+                if (rigthOpeningPHP) {
+                    newY = point1.position.y + findDeviationFromAngle( 2, phpAngle);
+                } else{
+                    newY =point1.position.y - findDeviationFromAngle( 2, phpAngle);
+                }
+                if (rigthOpeningPFP) {
+                    newZ = point1.position.z + findDeviationFromAngle( 2, pfpAngle);
+                } else{
+                    newZ =point1.position.z - findDeviationFromAngle( 2, pfpAngle);
+                }
+                
+                newX = point1.position.x - 2;
+
+                pointTemp = createPoint(newX, newY, newZ, '', false);
                 createLine( point1, pointTemp);
-                break;
+            }
+        break;
+
+        case 8:
+        break;
 
         case 9:
             if (point1 != point2) {
                 createLine( point1, point2);
             }
-            break;
+        break;
         default:
-            break;
+        break;
     }
 }
 
@@ -327,6 +388,35 @@ export function newPlane() {
     }
 }
 
+export function selectMenuPoint( select ){
+    if (menuPoint == 0 || menuPoint != select) {
+        
+        clearMenuPoint();
+
+        switch (select) {
+            case 1:
+                buttonPointNew.style.backgroundColor = 'gray';
+                controlsPointNew.style.display = 'block';
+                menuPoint = select;
+            break;
+            case 2:
+                buttonPointIntersection.style.backgroundColor = 'gray';
+                controlsPointIntersection.style.display = 'block';
+                menuPoint = select;
+            break;
+            case 3:
+                buttonPointNotable.style.backgroundColor = 'gray';
+                controlsPointNotable.style.display = 'block';
+                menuPoint = select;
+            default:
+            break;
+        }
+    } else {
+        clearMenuPoint();
+        menuPoint = 0;
+    }
+}
+
 export function selectMenuLine( select ){
     if (menuLine == 0 || menuLine != select) {
 
@@ -336,40 +426,74 @@ export function selectMenuLine( select ){
             case 1:
                 buttonLineLevel.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                point2Name.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 2:
                 buttonLineFrontal.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                point2Name.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 3:
                 buttonLineFrontoHorizontal.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                point2Name.style.display = 'none';
-                angle.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAngle.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 4:
                 buttonLineTopo.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                point2Name.style.display = 'none';
-                angle.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAngle.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 5:
                 buttonLineVertical.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                point2Name.style.display = 'none';
-                angle.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAngle.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
+                menuLine = select;
+            break;
+            case 6:
+                buttonLinePass.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                spanPoint1Name.style.display = 'none';
+                spanPoint2Name.style.display = 'none';
+                spanAngle.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
+                menuLine = select;
+            break;
+            case 7:
+                buttonLineOblique.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                spanAngle.style.display = 'none';
+                menuLine = select;
+            break;
+            case 8:
+                buttonLinePerfil.style.backgroundColor = 'gray';
+                controlsLinePoint.style.display = 'block';
+                spanAngle.style.display = 'none';
                 menuLine = select;
             break;
             case 9:
                 buttonLinePoint.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                angle.style.display = 'none';
+                spanAngle.style.display = 'none';
+                spanAnglePFP.style.display = 'none';
+                spanAnglePHP.style.display = 'none';
                 menuLine = select;
                 break;
             default:
@@ -418,6 +542,17 @@ function clearMenu(){
 
     clearMenuLine();
     clearMenuPlane();
+    clearMenuPoint();
+}
+
+function clearMenuPoint() {
+    buttonPointNew.style.backgroundColor = '';
+    buttonPointIntersection.style.backgroundColor = '';
+    buttonPointNotable.style.backgroundColor = '';
+
+    controlsPointNew.style.display = 'none';
+    controlsPointIntersection.style.display = 'none';
+    controlsPointNotable.style.display = 'none';
 }
 
 function clearMenuLine(){
@@ -427,16 +562,71 @@ function clearMenuLine(){
     buttonLineFrontoHorizontal.style.backgroundColor = '';
     buttonLineTopo.style.backgroundColor = '';
     buttonLineVertical.style.backgroundColor = '';
+    buttonLinePass.style.backgroundColor = '';
+    buttonLineOblique.style.backgroundColor = '';
+    buttonLinePerfil.style.backgroundColor = '';
 
     controlsLinePoint.style.display = 'none';
-    controlsLineLevel.style.display = 'none';
 
-    point2Name.style.display = '';
-    angle.style.display = '';
+    spanPoint1Name.style.display = '';
+    spanPoint2Name.style.display = '';
+    spanAngle.style.display = '';
+    spanAnglePFP.style.display = '';
+    spanAnglePHP.style.display = '';
 }
 
 function clearMenuPlane() {
     buttonPlanePoints.style.backgroundColor = '';
 
     controlsPlanePoints.style.display = 'none';
+}
+
+function updateOnFocusObject1() {
+    const selectObject = document.getElementById("objectType1");
+    const inputObject = document.getElementById("objectName1");
+    const datalistId = inputObject.getAttribute("list");
+    const datalist = document.getElementById("object1");
+
+    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    inputObject.onfocus = null;
+
+    switch (selectObject.value) {
+        case "point":
+            inputObject.onfocus = showExistingPointList(datalistId);
+        break;
+        case "line":
+            // inputObject.onfocus = showExistingLineList;
+        break;
+        case "plane":
+            // inputObject.onfocus = showExistingPlaneList;
+        break;
+    
+        default:
+            break;
+    }
+}
+
+function updateOnFocusObject2() {
+    const selectObject = document.getElementById("objectType2");
+    const inputObject = document.getElementById("objectName2");
+    const datalistId = inputObject.getAttribute("list");
+    const datalist = document.getElementById("object2");
+
+    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    inputObject.onfocus = null;
+
+    switch (selectObject.value) {
+        case "point":
+            inputObject.onfocus = showExistingPointList(datalistId);
+        break;
+        case "line":
+            // inputObject.onfocus = showExistingLineList;
+        break;
+        case "plane":
+            // inputObject.onfocus = showExistingPlaneList;
+        break;
+    
+        default:
+            break;
+    }
 }

@@ -41,12 +41,12 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
         point.onVerticalPlane = "true";
     }
     
-    if (coordinateY == 0) {
+    if (coordinateY == 0) { 
         point.onHorizontalPlane = "true";
     }
 
     // Sets position
-    point.position.set( coordinateX, coordinateY, coordinateZ);
+    point.position.set( -coordinateX, coordinateY, coordinateZ);
 
     if (draw){
         draw3dPlane(point);
