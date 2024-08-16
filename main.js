@@ -82,10 +82,10 @@ const earthLine2d = earthLine.clone();
 
 // Create example object
 
-// const tempPoint1 = createPoint(4, 5, 5, "R", false);
-// const tempPoint2 = createPoint(1, 1, 7, "S", false);
-// const tempPoint3 = createPoint(-3, -2, 3, "T", false);
-// const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
+const tempPoint1 = createPoint(4, 5, 5, "R", false);
+const tempPoint2 = createPoint(1, 1, 7, "S", false);
+const tempPoint3 = createPoint(-3, -2, 3, "T", false);
+const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
 // const tempShape = createShape( 4, 5, tempPoint3.position, tempPlane1 );
 
 // const tempPoint5 = createPoint(-2, 4, 7, "N");

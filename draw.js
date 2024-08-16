@@ -161,11 +161,11 @@ export function draw2dPlane ( object ) {
             const line2HorizontalPoint = intersection(object.geoChild[1], horizontalPlane);
             const line2VerticalPoint = intersection(object.geoChild[1], verticalPlane);
 
-            createPoint(line1HorizontalPoint.x, line1HorizontalPoint.y, line1HorizontalPoint.z, 'H');
-            createPoint(line2HorizontalPoint.x, line2HorizontalPoint.y, line2HorizontalPoint.z, 'H');
+            createPoint(line1HorizontalPoint.x, line1HorizontalPoint.y, line1HorizontalPoint.z, 'H' + object.name);
+            createPoint(line2HorizontalPoint.x, line2HorizontalPoint.y, line2HorizontalPoint.z, 'H' + object.name);
 
-            createPoint(line1VerticalPoint.x, line1VerticalPoint.y, line1VerticalPoint.z, 'F');
-            createPoint(line2VerticalPoint.x, line2VerticalPoint.y, line2VerticalPoint.z, 'F');
+            createPoint(line1VerticalPoint.x, line1VerticalPoint.y, line1VerticalPoint.z, 'F' + object.name);
+            createPoint(line2VerticalPoint.x, line2VerticalPoint.y, line2VerticalPoint.z, 'F' + object.name);
 
             const line1HorizontalPoint2d = line1HorizontalPoint.clone();
             line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;

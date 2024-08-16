@@ -7,7 +7,33 @@ export const pointNamesList = ['A', 'B', 'C', 'D', 'E', 'G', 'J', 'K', 'L', 'M',
 export const existingPointList = [];
 export const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 export const existingLineList = [];
-const planeNamesList = ['⍺', '⍵', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+export const planeNamesList = [
+    'α', // Alfa
+    'β', // Beta
+    'γ', // Gama
+    'δ', // Delta
+    'ε', // Epsilon
+    'ζ', // Zeta
+    'η', // Eta
+    'θ', // Teta
+    'ι', // Iota
+    'κ', // Kappa
+    'λ', // Lambda
+    'μ', // Mu
+    'ν', // Nu
+    'ξ', // Xi
+    'ο', // Omicron
+    'π', // Pi
+    'ρ', // Rho
+    'σ', // Sigma
+    'τ', // Tau
+    'υ', // Upsilon
+    'φ', // Phi
+    'χ', // Chi
+    'ψ', // Psi
+    'ω'  // Omega
+  ];
+export const existingPlaneList = [];
 
 export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, draw = true){
     // Creates geometry, Material and the mesh
@@ -56,7 +82,7 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     return point;
 }
 
-export function createLine(point1, point2, lineName = "null", draw = true){
+export function createLine(point1, point2, lineName = "", draw = true){
     
     let point1Position, point2Position;
     // Creates geometry, Material and the mesh
@@ -77,7 +103,7 @@ export function createLine(point1, point2, lineName = "null", draw = true){
     const line = new THREE.LineSegments(lineGeometry, lineMaterial);
 
     if (draw) {
-        if (lineName == "null") {
+        if (lineName == "") {
             lineName = lineNamesList.shift();
         } else {
             const indexName = lineNamesList.findIndex(name => name === lineName);
@@ -108,7 +134,7 @@ export function createLine(point1, point2, lineName = "null", draw = true){
     return line;
 }
 
-export function createPlane(object1, object2, object3 = 'null'){
+export function createPlane(object1, object2, object3 = '', planeName = '', draw = true){
     let line1;
     let line2;
 
@@ -118,7 +144,7 @@ export function createPlane(object1, object2, object3 = 'null'){
     if (object2.geoType == 'Line') {
         line1 = object1.clone();
         line2 = object2.clone();
-    } else if (object3 == 'null'){
+    } else if (object3 == ''){
         line1 = object1.clone();
         line2 = createLine( object1.position.clone(), object2.position.clone()); //Problem Line position
     } else {
@@ -172,11 +198,25 @@ export function createPlane(object1, object2, object3 = 'null'){
     const materialPlane = new THREE.MeshBasicMaterial( {color: 'aquamarine', side: THREE.DoubleSide, opacity: 0.3, transparent: true, depthWrite: false} );
     const plane = new THREE.Mesh( geometryPlane, materialPlane);
 
+    if (draw) {
+        if (planeName == "") {
+            planeName = planeNamesList.shift();
+        } else {
+            const indexName = planeNamesList.findIndex(name => name === planeName);
+            if (indexName == -1) {
+                planeName = planeNamesList.shift();
+            } else {
+                planeNamesList.splice(indexName, 1);
+            }
+        }
+        existingPlaneList.push(planeName);
+    }
+
+
     plane.geoType = "Plane";
-    // plane.name = planeName;
+    plane.name = planeName;
     plane.geoChild = [line1, line2];
     plane.geoQuaternion = quaternion;
-
 
     draw2dPlane(plane);
     draw3dPlane(plane);
