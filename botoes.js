@@ -2,9 +2,13 @@ import { viewHeigth, viewWidth, findVectorByName } from "./main.js";
 import { createPoint, pointNamesList, existingPointList, createLine, createPlane } from "./create.js";
 import { findDeviationFromAngle } from "./calculations.js";
 
-// Event Listeners
-document.getElementById("objectType1").addEventListener("change", updateOnFocusObject1);
-document.getElementById("objectType2").addEventListener("change", updateOnFocusObject2);
+document.addEventListener("DOMContentLoaded", function() {
+    // Event Listeners
+    document.getElementById("objectType1").addEventListener("change", () => {
+        updateOnFocusObject('objectType1', 'objectName1')});
+    document.getElementById("objectType2").addEventListener("change", () => {
+        updateOnFocusObject('objectType2', 'objectName2')});
+});
 
 // Variables
 let janelaMaximizada = false;
@@ -70,26 +74,42 @@ const buttonPlanePoints = document.getElementById("buttonPlanePoints");
 const controlsPlanePoints = document.getElementById("controlsPlanePoints");
 
 export function showPointNameList(){
-    const datalist = document.getElementById("namePointList");
+    const selectElement = document.getElementById("name");
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Nome';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
 
     pointNamesList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
-        datalist.appendChild(option);
+        option.textContent = name;
+        selectElement.appendChild(option);
     });
 }
 
-export function showExistingPointList(datalistId){
-    const datalist = document.getElementById(datalistId);
+export function showExistingPointList(elementId){
+    const selectElement = document.getElementById(elementId);
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Ponto';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
 
     existingPointList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
-        datalist.appendChild(option);
+        option.textContent = name;
+        selectElement.appendChild(option);
     });
 }
 
@@ -581,43 +601,16 @@ function clearMenuPlane() {
     controlsPlanePoints.style.display = 'none';
 }
 
-function updateOnFocusObject1() {
-    const selectObject = document.getElementById("objectType1");
-    const inputObject = document.getElementById("objectName1");
-    const datalistId = inputObject.getAttribute("list");
-    const datalist = document.getElementById("object1");
+function updateOnFocusObject(select, input) {
+    const selectObject = document.getElementById(select);
+    const inputObject = document.getElementById(input);
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    while (inputObject.firstChild) inputObject.removeChild(inputObject.firstChild);
     inputObject.onfocus = null;
 
     switch (selectObject.value) {
         case "point":
-            inputObject.onfocus = showExistingPointList(datalistId);
-        break;
-        case "line":
-            // inputObject.onfocus = showExistingLineList;
-        break;
-        case "plane":
-            // inputObject.onfocus = showExistingPlaneList;
-        break;
-    
-        default:
-            break;
-    }
-}
-
-function updateOnFocusObject2() {
-    const selectObject = document.getElementById("objectType2");
-    const inputObject = document.getElementById("objectName2");
-    const datalistId = inputObject.getAttribute("list");
-    const datalist = document.getElementById("object2");
-
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
-    inputObject.onfocus = null;
-
-    switch (selectObject.value) {
-        case "point":
-            inputObject.onfocus = showExistingPointList(datalistId);
+            inputObject.onfocus = showExistingPointList(input);
         break;
         case "line":
             // inputObject.onfocus = showExistingLineList;

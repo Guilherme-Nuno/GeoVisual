@@ -3,7 +3,7 @@ import { findMaxPoints, findVertices, rotateToPlane } from './calculations.js';
 import { draw2dPlane, draw3dPlane } from './draw.js';
 import { scene3d } from './main.js';
 
-export const pointNamesList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+export const pointNamesList = ['A', 'B', 'C', 'D', 'E', 'G', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 export const existingPointList = [];
 export const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 export const existingLineList = [];
