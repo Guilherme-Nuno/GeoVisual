@@ -52,17 +52,29 @@ controls3D.update();
 // Create geometry for 3d planes
 const geometryHorizontalPlane = new THREE.PlaneGeometry(30,30);
 const geometryVerticalPlane = new THREE.PlaneGeometry(30,30);
+const geometryB13 = new THREE.PlaneGeometry(30,30);
+const geometryB24 = new THREE.PlaneGeometry(30,30);
 const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
 const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorB13 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorB24 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
 export const horizontalPlane = new THREE.Mesh( geometryHorizontalPlane, colorHorizontalPlane);
 export const verticalPlane = new THREE.Mesh( geometryVerticalPlane, colorVerticalPlane);
+export const b13 = new THREE.Mesh( geometryB13, colorB13);
+export const b24 = new THREE.Mesh( geometryB24, colorB24);
 
 geometryHorizontalPlane.rotateX(Math.PI / 2);
+geometryB13.rotateX(Math.PI / 4);
+geometryB24.rotateX(-(Math.PI / 4));
 
 const edgesHorizontalPlane = new THREE.EdgesGeometry(geometryHorizontalPlane);
 const edgesVerticalPlane = new THREE.EdgesGeometry(geometryVerticalPlane);
+const edgesB13 = new THREE.EdgesGeometry(geometryB13);
+const edgesB24 = new THREE.EdgesGeometry(geometryB24);
 const linesHorizontalPlane = new THREE.LineSegments(edgesHorizontalPlane, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
 const linesVerticalPlane = new THREE.LineSegments(edgesVerticalPlane, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
+const linesB13 = new THREE.LineSegments(edgesB13, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
+const linesB24 = new THREE.LineSegments(edgesB24, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
 
 // Create cube encapsulating planes
 const geometryCage = new THREE.BoxGeometry(30,30,30);
@@ -82,10 +94,10 @@ const earthLine2d = earthLine.clone();
 
 // Create example object
 
-const tempPoint1 = createPoint(4, 5, 5, "R", false);
-const tempPoint2 = createPoint(1, 1, 7, "S", false);
-const tempPoint3 = createPoint(-3, -2, 3, "T", false);
-const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
+// const tempPoint1 = createPoint(4, 5, 5, "R");
+// const tempPoint2 = createPoint(1, 1, 7, "S");
+// const tempPoint3 = createPoint(-3, -2, 3, "T");
+// const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
 // const tempShape = createShape( 4, 5, tempPoint3.position, tempPlane1 );
 
 // const tempPoint5 = createPoint(-2, 4, 7, "N");
@@ -120,6 +132,10 @@ scene3d.add(linesHorizontalPlane);
 scene3d.add(linesVerticalPlane)
 scene3d.add(earthLine);
 scene3d.add(cage);
+scene3d.add(b13);
+scene3d.add(linesB13);
+scene3d.add(b24);
+scene3d.add(linesB24);
 
 
 // Temporary objects

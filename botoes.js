@@ -264,7 +264,7 @@ export function newPoint(){
     const coordZ = +document.getElementById('coordZ').value;
     const name = document.getElementById('name').value;
 
-    createPoint(coordX, coordY, coordZ, name);
+    createPoint(-coordX, coordY, coordZ, name);
 
     document.getElementById('coordX').value = '';
     document.getElementById('coordY').value = '';

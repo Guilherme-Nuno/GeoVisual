@@ -42,17 +42,13 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     const point = new THREE.Mesh(pointGeometry, pointMaterial);
 
     if (draw) {
-        if ( pointName == "null") {
+        const indexName = pointNamesList.findIndex(name => name === pointName);
+        if (indexName != -1) {
+            pointNamesList.splice(indexName, 1);
+        } else if (!(pointName.startsWith('H') || pointName.startsWith('F') || pointName.startsWith('I') || pointName.startsWith('Q'))) {
             pointName = pointNamesList.shift();
-        } else {
-            const indexName = pointNamesList.findIndex(name => name === pointName);
-            if (indexName == -1) {
-                pointName = pointNamesList.shift();
-            } else {
-                pointNamesList.splice(indexName, 1);
-            }
-        }
-        existingPointList.push(pointName);
+        } 
+        existingPointList.push(lineName);
     }
 
     const groupPoint = new THREE.Group();
@@ -72,7 +68,7 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     }
 
     // Sets position
-    point.position.set( -coordinateX, coordinateY, coordinateZ);
+    point.position.set( coordinateX, coordinateY, coordinateZ);
 
     if (draw){
         draw3dPlane(point);
@@ -103,17 +99,13 @@ export function createLine(point1, point2, lineName = "", draw = true){
     const line = new THREE.LineSegments(lineGeometry, lineMaterial);
 
     if (draw) {
-        if (lineName == "") {
+        const indexName =linetNamesList.findIndex(name => name === lineName);
+        if (indexName == -1) {
             lineName = lineNamesList.shift();
         } else {
-            const indexName = lineNamesList.findIndex(name => name === lineName);
-            if (indexName == -1) {
-                lineName = lineNamesList.shift();
-            } else {
-                lineNamesList.splice(indexName, 1);
-            }
+            lineNamesList.splice(indexName, 1);
         }
-        existingLineList.push(lineName);
+        existingLineList.push(pointName);
     }
 
     // Adds name and new parameters geo
