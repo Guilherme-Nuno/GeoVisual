@@ -3,7 +3,10 @@ import { OrbitControls } from 'https://unpkg.com/three@0.124.0/examples/jsm/cont
 import { createPoint, createLine, createPlane, createShape } from './create.js';
 import { draw2dPlane } from './draw.js';
 
+
 // Global Variables
+const PROJECTIONPLANECOLORS = '#FBFBFB';
+
 let vistas3D = document.getElementById("vista-3D");
 export const viewWidth = vistas3D.clientWidth;
 export const viewHeigth = vistas3D.clientHeight;
@@ -54,10 +57,10 @@ const geometryHorizontalPlane = new THREE.PlaneGeometry(30,30);
 const geometryVerticalPlane = new THREE.PlaneGeometry(30,30);
 const geometryB13 = new THREE.PlaneGeometry(30,30);
 const geometryB24 = new THREE.PlaneGeometry(30,30);
-const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
-const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
-const colorB13 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
-const colorB24 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
+const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: PROJECTIONPLANECOLORS, side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: PROJECTIONPLANECOLORS, side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorB13 = new THREE.MeshBasicMaterial( {color: PROJECTIONPLANECOLORS, side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
+const colorB24 = new THREE.MeshBasicMaterial( {color: PROJECTIONPLANECOLORS, side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
 export const horizontalPlane = new THREE.Mesh( geometryHorizontalPlane, colorHorizontalPlane);
 export const verticalPlane = new THREE.Mesh( geometryVerticalPlane, colorVerticalPlane);
 export const b13 = new THREE.Mesh( geometryB13, colorB13);

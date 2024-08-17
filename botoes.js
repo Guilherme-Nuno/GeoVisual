@@ -424,6 +424,25 @@ export function newLine(){
         break;
 
         case 8:
+            if (point1Name.value != '' && point2Name.value != '') {
+                createLine(point1, point2);
+            } else {
+                if (rigthOpeningPHP) {
+                    newY = point1.position.y + findDeviationFromAngle( 2, phpAngle);
+                } else{
+                    newY =point1.position.y - findDeviationFromAngle( 2, phpAngle);
+                }
+                if (rigthOpeningPFP) {
+                    newZ = point1.position.z + findDeviationFromAngle( 2, pfpAngle);
+                } else{
+                    newZ =point1.position.z - findDeviationFromAngle( 2, pfpAngle);
+                }
+                
+                newX = point1.position.x;
+
+                pointTemp = createPoint(newX, newY, newZ, '', false);
+                createLine( point1, pointTemp);
+            }
         break;
 
         case 9:
