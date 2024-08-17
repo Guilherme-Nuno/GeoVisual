@@ -56,8 +56,8 @@ const geometryB13 = new THREE.PlaneGeometry(30,30);
 const geometryB24 = new THREE.PlaneGeometry(30,30);
 const colorHorizontalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
 const colorVerticalPlane = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
-const colorB13 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
-const colorB24 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false} );
+const colorB13 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
+const colorB24 = new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide, transparent: true, opacity: 0.6, depthWrite: false, visible: false} );
 export const horizontalPlane = new THREE.Mesh( geometryHorizontalPlane, colorHorizontalPlane);
 export const verticalPlane = new THREE.Mesh( geometryVerticalPlane, colorVerticalPlane);
 export const b13 = new THREE.Mesh( geometryB13, colorB13);
@@ -73,8 +73,8 @@ const edgesB13 = new THREE.EdgesGeometry(geometryB13);
 const edgesB24 = new THREE.EdgesGeometry(geometryB24);
 const linesHorizontalPlane = new THREE.LineSegments(edgesHorizontalPlane, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
 const linesVerticalPlane = new THREE.LineSegments(edgesVerticalPlane, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
-const linesB13 = new THREE.LineSegments(edgesB13, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
-const linesB24 = new THREE.LineSegments(edgesB24, new THREE.LineBasicMaterial( {color: 'DarkGray'} ));
+export const linesB13 = new THREE.LineSegments(edgesB13, new THREE.LineBasicMaterial( {color: 'DarkGray', visible: false} ));
+export const linesB24 = new THREE.LineSegments(edgesB24, new THREE.LineBasicMaterial( {color: 'DarkGray', visible: false} ));
 
 // Create cube encapsulating planes
 const geometryCage = new THREE.BoxGeometry(30,30,30);
@@ -174,6 +174,6 @@ function animate() {
     renderer2d.render(scene2d, camera2d);
 }
 
-export function findVectorByName( name ){
+export function findObjectByName( name ){
     return scene3d.getObjectByName( name );
 }

@@ -48,7 +48,7 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
         } else if (!(pointName.startsWith('H') || pointName.startsWith('F') || pointName.startsWith('I') || pointName.startsWith('Q'))) {
             pointName = pointNamesList.shift();
         } 
-        existingPointList.push(lineName);
+        existingPointList.push(pointName);
     }
 
     const groupPoint = new THREE.Group();
@@ -99,13 +99,13 @@ export function createLine(point1, point2, lineName = "", draw = true){
     const line = new THREE.LineSegments(lineGeometry, lineMaterial);
 
     if (draw) {
-        const indexName =linetNamesList.findIndex(name => name === lineName);
+        const indexName =lineNamesList.findIndex(name => name === lineName);
         if (indexName == -1) {
             lineName = lineNamesList.shift();
         } else {
             lineNamesList.splice(indexName, 1);
         }
-        existingLineList.push(pointName);
+        existingLineList.push(lineName);
     }
 
     // Adds name and new parameters geo

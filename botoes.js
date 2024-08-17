@@ -1,6 +1,6 @@
-import { viewHeigth, viewWidth, findVectorByName } from "./main.js";
-import { createPoint, pointNamesList, existingPointList, createLine, createPlane } from "./create.js";
-import { findDeviationFromAngle } from "./calculations.js";
+import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane } from "./main.js";
+import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList } from "./create.js";
+import { findDeviationFromAngle, intersection } from "./calculations.js";
 
 document.addEventListener("DOMContentLoaded", function() {
     // Event Listeners
@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Variables
 let janelaMaximizada = false;
+let showBisector = false;
 let menu = 0;
 let menuLine = 0;
 let menuPlane = 0;
@@ -73,6 +74,27 @@ const buttonPlanePoints = document.getElementById("buttonPlanePoints");
 
 const controlsPlanePoints = document.getElementById("controlsPlanePoints");
 
+export function showBisectorPlanes(){
+    switch (showBisector) {
+        case false:
+            b13.material.visible = true;
+            b24.material.visible = true;
+            linesB13.material.visible = true;
+            linesB24.material.visible = true;
+            showBisector = true;
+        break;
+        case true:
+            b13.material.visible = false;
+            b24.material.visible = false;
+            linesB13.material.visible = false;
+            linesB24.material.visible = false;
+            showBisector = false;
+        break;
+        default:
+            break;
+    }
+}
+
 export function showPointNameList(){
     const selectElement = document.getElementById("name");
 
@@ -106,6 +128,26 @@ export function showExistingPointList(elementId){
     selectElement.appendChild(placeholderOption);
 
     existingPointList.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        selectElement.appendChild(option);
+    });
+}
+
+export function showExistingLineList(elementId){
+    const selectElement = document.getElementById(elementId);
+
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Recta';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
+
+    existingLineList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
         option.textContent = name;
@@ -176,16 +218,16 @@ export function expandirJanela(janelaID) {
         vistas3D.style.position = '';
         vistas3D.style.top = '';
         vistas3D.style.left = '';
-        vistas3D.style.width = viewWidth;
-        vistas3D.style.height = viewHeigth;
+        vistas3D.style.width = '';
+        vistas3D.style.height = '';
         vistas3D.style.flex = '';
         vistas3D.style.zIndex = '';
 
         vistas2D.style.position = '';
         vistas2D.style.top = '';
         vistas2D.style.right = '';
-        vistas2D.style.width = viewWidth;
-        vistas2D.style.height = viewHeigth;
+        vistas2D.style.width = '';
+        vistas2D.style.height = '';
         vistas2D.style.flex = '';
         vistas2D.style.zIndex = '';
 
@@ -273,8 +315,8 @@ export function newPoint(){
 }
 
 export function newLine(){
-    const point1 = findVectorByName( point1Name.value );
-    const point2 = findVectorByName( point2Name.value );
+    const point1 = findObjectByName( point1Name.value );
+    const point2 = findObjectByName( point2Name.value );
     const pointAngle = +angle.value;
     const phpAngle = +anglePHP.value;
     const pfpAngle = +anglePFP.value;
@@ -400,11 +442,39 @@ export function newPlane() {
     const point3Name = document.getElementById('planePoint3Name').value;
 
     if (point1Name != point2Name && point2Name != point3Name && point1Name != point3Name) {
-        const point1 = findVectorByName( point1Name );
-        const point2 = findVectorByName( point2Name );
-        const point3 = findVectorByName( point3Name );
+        const point1 = findObjectByName( point1Name );
+        const point2 = findObjectByName( point2Name );
+        const point3 = findObjectByName( point3Name );
 
         createPlane(point1, point2, point3);
+    }
+}
+
+export function newIntersection( select ) {
+
+    const lineSelect = findObjectByName(document.getElementById('objectNameNotable').value);
+    let intersectionPoint;
+
+    switch (select) {
+        case 'php':
+            intersectionPoint = intersection(lineSelect, horizontalPlane);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'H' + lineSelect.name);
+        break;
+        case 'pfp':
+            intersectionPoint = intersection(lineSelect, verticalPlane);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'F' + lineSelect.name);
+        break;
+        case 'b13':
+            intersectionPoint = intersection(lineSelect, b13);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'Q' + lineSelect.name);
+        break;
+        case 'b24':
+            intersectionPoint = intersection(lineSelect, b24);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'I' + lineSelect.name);
+        break;
+        default:
+            // Fazer para intersecções de objectos no geral.
+            break;
     }
 }
 

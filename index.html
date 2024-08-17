@@ -13,6 +13,9 @@
     window.selectMenuPlane = BUTTON.selectMenuPlane;
     window.newPlane = BUTTON.newPlane;
     window.selectMenuPoint = BUTTON.selectMenuPoint;
+    window.showBisectorPlanes = BUTTON.showBisectorPlanes;
+    window.newIntersection = BUTTON.newIntersection;
+    window.showExistingLineList = BUTTON.showExistingLineList;
 </script>
 
 <script type="module" src="main.js"></script>
@@ -28,7 +31,10 @@
     <div class="container">
         <div class="box-container" id="box-container">
             <div class="vistas" id="vista-3D">
-                <button class="botoes_topo_esq" id="botao-3D" onclick="expandirJanela('vista-3D')">〈〉</button>
+                <div class="botoes_topo_esq">
+                    <button id="botao-3D" onclick="expandirJanela('vista-3D')">〈〉</button>
+                    <button id="botao-Bisec" onclick="showBisectorPlanes()">BISEC</button>
+                </div>
             </div>
             <div class="vistas" id="vista-2D">
                 <button class="botoes_topo_dir" id="botao-2D" onclick="expandirJanela('vista-2D')">〈〉</button>
@@ -86,18 +92,12 @@
                 </div>
             
                 <div class="controlsPointNotable" id="controlsPointNotable">
-                    <select id="objectTypeNotable">
-                        <option value="" disabled selected>Selecione opção</option>
-                        <option value="point">Ponto</option>
-                        <option value="line">Recta</option>
-                        <option value="plane">Plano</option>
-                    </select>
-                    <input list="objectNotable" id="objectNameNotable" class="input-coord" placeholder="Nome">
-                    <datalist id="objectNotable"></datalist>
-                    <button class="botoes_controlos" onclick="newIntersection()">PHP</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">PFP</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">B13</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">B24</button>
+                    Recta:
+                    <select id="objectNameNotable" class="input-coord" placeholder="Nome" onfocus="showExistingLineList('objectNameNotable')"></select>
+                    <button class="botoes_controlos" onclick="newIntersection('php')">PHP</button>
+                    <button class="botoes_controlos" onclick="newIntersection('pfp')">PFP</button>
+                    <button class="botoes_controlos" onclick="newIntersection('b13')">B13</button>
+                    <button class="botoes_controlos" onclick="newIntersection('b24')">B24</button>
                 </div>
             </div>
 
