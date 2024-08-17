@@ -664,6 +664,10 @@ function clearMenu(){
     clearMenuLine();
     clearMenuPlane();
     clearMenuPoint();
+
+    menuLine = 0;
+    menuPlane = 0;
+    menuPoint = 0;
 }
 
 function clearMenuPoint() {
