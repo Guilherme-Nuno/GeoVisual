@@ -398,7 +398,22 @@ export function newLine(){
         break;
 
         case 6:
-            createLine( createPoint(0,0,0,'',false), createPoint(1,0,0,'',false) );
+            if (phpAngle != 0) {
+                if (rigthOpeningPHP) {
+                    newX = point1.position.x - findDeviationFromAngle( point1.position.y, phpAngle);
+                } else{
+                    newX =point1.position.x + findDeviationFromAngle( point1.position.y, phpAngle);
+                }
+            } else {
+                if (rigthOpeningPFP) {
+                    newX = point1.position.x - findDeviationFromAngle( point1.position.z, pfpAngle);
+                } else{
+                    newZ =point1.position.x + findDeviationFromAngle( point1.position.z, pfpAngle);
+                }
+            }
+
+                pointTemp = createPoint(newX, 0, 0, '', false);
+                createLine( point1, pointTemp);
         break;
 
         case 7:
@@ -578,11 +593,8 @@ export function selectMenuLine( select ){
             case 6:
                 buttonLinePass.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                spanPoint1Name.style.display = 'none';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
-                spanAnglePFP.style.display = 'none';
-                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 7:
