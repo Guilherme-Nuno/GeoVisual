@@ -3,11 +3,9 @@ import { findMaxPoints, findVertices, rotateToPlane } from './calculations.js';
 import { draw2dPlane, draw3dPlane } from './draw.js';
 import { scene3d } from './main.js';
 
-export const pointNamesList = ['A', 'B', 'C', 'D', 'E', 'G', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-export const existingPointList = [];
-export const lineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-export const existingLineList = [];
-export const planeNamesList = [
+const initialPointNamesList = ['A', 'B', 'C', 'D', 'E', 'G', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+const initialLineNamesList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+const initialPlaneNamesList = [
     'α', // Alfa
     'β', // Beta
     'γ', // Gama
@@ -33,6 +31,12 @@ export const planeNamesList = [
     'ψ', // Psi
     'ω'  // Omega
   ];
+
+export let pointNamesList = [];
+export const existingPointList = [];
+export let lineNamesList = [];
+export const existingLineList = [];
+export let planeNamesList = [];
 export const existingPlaneList = [];
 
 export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, draw = true){
@@ -290,4 +294,18 @@ export function createLineSegment( point1, point2 ){
 
 export function createSolid( sideSize, sides, position, plane, length){
     
+}
+
+export function createNamesLists() {
+    existingPointList.length = 0;
+    existingLineList.length = 0;
+    existingPlaneList.length = 0;
+    pointNamesList.length = 0;
+    lineNamesList.length = 0;
+    planeNamesList.length = 0;
+
+    pointNamesList = initialPointNamesList.slice();
+    lineNamesList = initialLineNamesList.slice();
+    planeNamesList = initialPlaneNamesList.slice();
+
 }

@@ -1,6 +1,7 @@
 import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane } from "./main.js";
 import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList } from "./create.js";
 import { findDeviationFromAngle, intersection } from "./calculations.js";
+import { addSaveStack } from "./fileUtils.js";
 
 document.addEventListener("DOMContentLoaded", function() {
     // Event Listeners
@@ -14,11 +15,13 @@ document.addEventListener("DOMContentLoaded", function() {
 let janelaMaximizada = false;
 let showBisector = false;
 let menu = 0;
+let menuFile = 'none';
 let menuLine = 0;
 let menuPlane = 0;
 let menuPoint = 0;
 
 // First menu
+const buttonFile = document.getElementById("buttonFile");
 const buttonPoint = document.getElementById("button_point");
 const buttonLine = document.getElementById("button_line");
 const buttonPlane = document.getElementById("button_plane");
@@ -26,12 +29,22 @@ const button2D = document.getElementById("button_2D");
 const button3D = document.getElementById("button_3D");
 const buttonFaq = document.getElementById("button_faq");
 
+const controlsFile = document.getElementById("controlsFile");
 const controlsPoint = document.getElementById("controls_point");
 const controlsLine = document.getElementById("controls_line");
 const controlsPlane = document.getElementById("controls_plane");
 const controls2D = document.getElementById("controls_2D");
 const controls3D = document.getElementById("controls_3D");
 const controlsFaq = document.getElementById("controls_faq");
+
+// File menu
+const controlsFileSave = document.getElementById("controlsFileSave");
+const controlsFileLoad = document.getElementById("controlsFileLoad");
+
+const buttonFileMenuSave = document.getElementById("buttonFileMenuSave");
+const buttonFileMenuLoad = document.getElementById("buttonFileMenuLoad");
+const buttonFileSave = document.getElementById("buttonFileSave");
+const buttonFileLoad = document.getElementById("buttonFileLoad");
 
 // Point menu
 const buttonPointNew = document.getElementById("buttonPointNew");
@@ -288,6 +301,12 @@ export function selectMenu(select) {
             controlsFaq.style.display = 'block';
             menu = 6;
             break;
+
+            case 7:
+                buttonFile.style.backgroundColor = 'gray';
+                controlsFile.style.display = 'block';
+                menu = 7;
+            break;
             
             default:
             break;
@@ -306,7 +325,19 @@ export function newPoint(){
     const coordZ = +document.getElementById('coordZ').value;
     const name = document.getElementById('name').value;
 
-    createPoint(-coordX, coordY, coordZ, name);
+    if (createPoint(-coordX, coordY, coordZ, name) != null) {
+        const command = {
+            action: 'create',
+            type: 'point',
+            parameters: {
+                x: -coordX,
+                y: coordY,
+                z: coordZ,
+                name: name
+            }
+        }
+        addSaveStack(command);
+    }
 
     document.getElementById('coordX').value = '';
     document.getElementById('coordY').value = '';
@@ -468,6 +499,41 @@ export function newLine(){
         default:
         break;
     }
+    switch (menuLine) {
+        case 9:
+            command = {
+                action: 'create',
+                type: 'line',
+                parameters:{
+                    point1: {
+                        name: point1.name
+                    },
+                    point2: {
+                        name: point2.name
+                    }
+                }
+            }
+            addSaveStack(command);
+        break;
+        default:
+            let command = {
+                action: 'create',
+                type: 'line',
+                parameters:{
+                    point1: {
+                        name: point1.name
+                    },
+                    point2: {
+                        name: '',
+                        x: pointTemp.position.x,
+                        y: pointTemp.position.y,
+                        z: pointTemp.position.z,
+                    }
+                }
+            }
+            addSaveStack(command);
+        break;
+    }
 }
 
 export function newPlane() {
@@ -509,6 +575,33 @@ export function newIntersection( select ) {
         default:
             // Fazer para intersecções de objectos no geral.
             break;
+    }
+}
+
+export function selectMenuFile ( select ){
+    if (menuFile == 'none' || menuFile != select){
+
+        clearMenuFile();
+
+        switch (select) {
+            case 'save':
+                buttonFileMenuSave.style.backgroundColor = 'gray';
+                controlsFileSave.style.display = 'block';
+                menuFile = select;
+            break;
+            case 'load':
+                buttonFileMenuLoad.style.backgroundColor = 'gray';
+                controlsFileLoad.style.display = 'block';
+                menuFile = select;
+            break;
+        
+            default:
+                break;
+        }
+
+    } else {
+        clearMenuFile();
+        menuFile = 'none';
     }
 }
 
@@ -647,6 +740,7 @@ export function selectMenuPlane( select ) {
 }
 
 function clearMenu(){
+    buttonFile.style.backgroundColor = '';
     buttonPoint.style.backgroundColor = '';
     buttonLine.style.backgroundColor = '';
     buttonPlane.style.backgroundColor = '';
@@ -654,6 +748,7 @@ function clearMenu(){
     button2D.style.backgroundColor = '';
     buttonFaq.style.backgroundColor = '';
 
+    controlsFile.style.display = 'none';
     controlsPoint.style.display = 'none';
     controlsLine.style.display = 'none';
     controlsPlane.style.display = 'none';
@@ -664,10 +759,20 @@ function clearMenu(){
     clearMenuLine();
     clearMenuPlane();
     clearMenuPoint();
+    clearMenuFile();
 
     menuLine = 0;
     menuPlane = 0;
     menuPoint = 0;
+    menuFile = 'none';
+}
+
+function clearMenuFile() {
+    buttonFileMenuLoad.style.backgroundColor = '';
+    buttonFileMenuSave.style.backgroundColor = '';
+    
+    controlsFileSave.style.display = 'none';
+    controlsFileLoad.style.display = 'none';
 }
 
 function clearMenuPoint() {

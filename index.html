@@ -16,6 +16,11 @@
     window.showBisectorPlanes = BUTTON.showBisectorPlanes;
     window.newIntersection = BUTTON.newIntersection;
     window.showExistingLineList = BUTTON.showExistingLineList;
+    window.selectMenuFile = BUTTON.selectMenuFile;
+
+    import { save, load } from "./main.js";
+    window.save = save;
+    window.load = load;
 </script>
 
 <script type="module" src="main.js"></script>
@@ -41,12 +46,25 @@
             </div>
         </div>
         <div class="controlos" id="controlos">
+            <button class="botoes_controlos" id="buttonFile" onclick="selectMenu(7)">MENU</button>
             <button class="botoes_controlos" id="button_point" onclick="selectMenu(1)">PONTO</button>
             <button class="botoes_controlos" id="button_line" onclick="selectMenu(2)">RECTA</button>
             <button class="botoes_controlos" id="button_plane" onclick="selectMenu(3)">PLANO</button>
-            <button class="botoes_controlos" id="button_2D" onclick="selectMenu(4)">FIGURAS 2D</button>
-            <button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">FIGURAS 3D</button>
+            <button class="botoes_controlos" id="button_2D" onclick="selectMenu(4)">FIGURAS</button>
+            <button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">SOLIDOS</button>
             <button class="botoes_controlos_dir" id="button_faq" onclick="selectMenu(6)">FAQ</button>
+
+            <div class="controlsFile" id="controlsFile">
+                <button class="botoes_controlos" id="buttonFileMenuSave" onclick="selectMenuFile('save')">GRAVAR</button>
+                <button class="botoes_controlos" id="buttonFileMenuLoad" onclick="selectMenuFile('load')">CARREGAR</button>
+                <div class="controlsFileSave" id="controlsFileSave">
+                    <button class="botoes_controlos" id="buttonFileSave" onclick="save()">GRAVAR</button>
+                </div>
+                <div class="controlsFileLoad" id="controlsFileLoad">
+                    <input class="botoes_controlos" type="file" id="fileInput">
+                    <button class="botoes_controlos" id="buttonFileLoad" onclick="load()">CARREGAR</button>
+                </div>
+            </div>
 
             <div class="controls_point" id="controls_point">
                 <button class="botoes_controlos" id="buttonPointNew" onclick="selectMenuPoint(1)">NOVO</button>
