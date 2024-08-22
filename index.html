@@ -13,6 +13,14 @@
     window.selectMenuPlane = BUTTON.selectMenuPlane;
     window.newPlane = BUTTON.newPlane;
     window.selectMenuPoint = BUTTON.selectMenuPoint;
+    window.showBisectorPlanes = BUTTON.showBisectorPlanes;
+    window.newIntersection = BUTTON.newIntersection;
+    window.showExistingLineList = BUTTON.showExistingLineList;
+    window.selectMenuFile = BUTTON.selectMenuFile;
+
+    import { save, load } from "./main.js";
+    window.save = save;
+    window.load = load;
 </script>
 
 <script type="module" src="main.js"></script>
@@ -28,19 +36,35 @@
     <div class="container">
         <div class="box-container" id="box-container">
             <div class="vistas" id="vista-3D">
-                <button class="botoes_topo_esq" id="botao-3D" onclick="expandirJanela('vista-3D')">〈〉</button>
+                <div class="botoes_topo_esq">
+                    <button id="botao-3D" onclick="expandirJanela('vista-3D')">〈〉</button>
+                    <button id="botao-Bisec" onclick="showBisectorPlanes()">BISEC</button>
+                </div>
             </div>
             <div class="vistas" id="vista-2D">
                 <button class="botoes_topo_dir" id="botao-2D" onclick="expandirJanela('vista-2D')">〈〉</button>
             </div>
         </div>
         <div class="controlos" id="controlos">
+            <button class="botoes_controlos" id="buttonFile" onclick="selectMenu(7)">MENU</button>
             <button class="botoes_controlos" id="button_point" onclick="selectMenu(1)">PONTO</button>
             <button class="botoes_controlos" id="button_line" onclick="selectMenu(2)">RECTA</button>
             <button class="botoes_controlos" id="button_plane" onclick="selectMenu(3)">PLANO</button>
-            <button class="botoes_controlos" id="button_2D" onclick="selectMenu(4)">FIGURAS 2D</button>
-            <button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">FIGURAS 3D</button>
+            <button class="botoes_controlos" id="button_2D" onclick="selectMenu(4)">FIGURAS</button>
+            <button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">SOLIDOS</button>
             <button class="botoes_controlos_dir" id="button_faq" onclick="selectMenu(6)">FAQ</button>
+
+            <div class="controlsFile" id="controlsFile">
+                <button class="botoes_controlos" id="buttonFileMenuSave" onclick="selectMenuFile('save')">GRAVAR</button>
+                <button class="botoes_controlos" id="buttonFileMenuLoad" onclick="selectMenuFile('load')">CARREGAR</button>
+                <div class="controlsFileSave" id="controlsFileSave">
+                    <button class="botoes_controlos" id="buttonFileSave" onclick="save()">GRAVAR</button>
+                </div>
+                <div class="controlsFileLoad" id="controlsFileLoad">
+                    <input class="botoes_controlos" type="file" id="fileInput">
+                    <button class="botoes_controlos" id="buttonFileLoad" onclick="load()">CARREGAR</button>
+                </div>
+            </div>
 
             <div class="controls_point" id="controls_point">
                 <button class="botoes_controlos" id="buttonPointNew" onclick="selectMenuPoint(1)">NOVO</button>
@@ -58,8 +82,9 @@
                     <input type="number" id="coordY" class="input-coord" placeholder="Cota">
 
                     <label for="name">Nome:</label> 
-                    <input list="namePointList" id="name" class="input-coord" placeholder="Name" onfocus="showPointNameList()">
-                    <datalist id="namePointList"></datalist>
+                    <select id="name" class="input-coord" placeholder="Name" onfocus="showPointNameList()">
+                        <option value="" disabled selected>Nome</option>
+                    </select>
                 
                     <button class="botoes_controlos" onclick="newPoint()">CRIAR</button>
                 </div>
@@ -71,8 +96,7 @@
                         <option value="line">Recta</option>
                         <option value="plane">Plano</option>
                     </select>
-                    <input list="object1" id="objectName1" class="input-coord" placeholder="Nome">
-                    <datalist id="object1"></datalist>
+                    <select id="objectName1" class="input-coord" placeholder="Nome"></select>
 
                     <select id="objectType2">
                         <option value="" disabled selected>Selecione opção</option>
@@ -80,25 +104,18 @@
                         <option value="line">Recta</option>
                         <option value="plane">Plano</option>
                     </select>
-                    <input list="object2" id="objectName2" class="input-coord" placeholder="Nome">
-                    <datalist id="object2"></datalist>
+                    <select id="objectName2" class="input-coord" placeholder="Nome"></select>
 
                     <button class="botoes_controlos" onclick="newIntersection()">CRIAR</button>
                 </div>
             
                 <div class="controlsPointNotable" id="controlsPointNotable">
-                    <select id="objectTypeNotable">
-                        <option value="" disabled selected>Selecione opção</option>
-                        <option value="point">Ponto</option>
-                        <option value="line">Recta</option>
-                        <option value="plane">Plano</option>
-                    </select>
-                    <input list="objectNotable" id="objectNameNotable" class="input-coord" placeholder="Nome">
-                    <datalist id="objectNotable"></datalist>
-                    <button class="botoes_controlos" onclick="newIntersection()">PHP</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">PFP</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">B13</button>
-                    <button class="botoes_controlos" onclick="newIntersection()">B24</button>
+                    Recta:
+                    <select id="objectNameNotable" class="input-coord" placeholder="Nome" onfocus="showExistingLineList('objectNameNotable')"></select>
+                    <button class="botoes_controlos" onclick="newIntersection('php')">PHP</button>
+                    <button class="botoes_controlos" onclick="newIntersection('pfp')">PFP</button>
+                    <button class="botoes_controlos" onclick="newIntersection('b13')">B13</button>
+                    <button class="botoes_controlos" onclick="newIntersection('b24')">B24</button>
                 </div>
             </div>
 
@@ -116,13 +133,11 @@
                 <div class="controlsLinePoint" id="controlsLinePoint">
                     <span id="spanPoint1Name">
                         Ponto 1: 
-                        <input list="existingPointList" id="point1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('existingPointList')">
-                        <datalist id="existingPointList"></datalist>
+                        <select id="point1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('point1Name')"></select>
                     </span>
                     <span id="spanPoint2Name">
                         Ponto 2:
-                        <input list="existingPointList" id="point2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                        <datalist id="existingPointList"></datalist>
+                        <select id="point2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('point2Name')"></select>
                     </span>
                     <span id="spanAngulo">
                         Angulo:
@@ -175,16 +190,13 @@
                 </div>
                 <div class="controlsPlanePoints" id="controlsPlanePoints">
                     <label for="point1">Ponto 1:</label> 
-                    <input list="existingPointList" id="planePoint1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                    <datalist id="existingPointList"></datalist>
+                    <select id="planePoint1Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('planePoint1Name')"></select>
 
                     <label for="point1">Ponto 2:</label> 
-                    <input list="existingPointList" id="planePoint2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                    <datalist id="existingPointList"></datalist>
+                    <select id="planePoint2Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('planePoint2Name')"></select>
 
                     <label for="point1">Ponto 3:</label> 
-                    <input list="existingPointList" id="planePoint3Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList()">
-                    <datalist id="existingPointList"></datalist>
+                    <select id="planePoint3Name" class="input-coord" placeholder="Point" onfocus="showExistingPointList('planePoint3Name')"></select>
 
                     <button class="botoes_controlos" onclick="newPlane()">CRIAR</button>
                 </div>

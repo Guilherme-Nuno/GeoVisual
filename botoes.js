@@ -1,19 +1,27 @@
-import { viewHeigth, viewWidth, findVectorByName } from "./main.js";
-import { createPoint, pointNamesList, existingPointList, createLine, createPlane } from "./create.js";
-import { findDeviationFromAngle } from "./calculations.js";
+import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane } from "./main.js";
+import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList } from "./create.js";
+import { findDeviationFromAngle, intersection } from "./calculations.js";
+import { addSaveStack } from "./fileUtils.js";
 
-// Event Listeners
-document.getElementById("objectType1").addEventListener("change", updateOnFocusObject1);
-document.getElementById("objectType2").addEventListener("change", updateOnFocusObject2);
+document.addEventListener("DOMContentLoaded", function() {
+    // Event Listeners
+    document.getElementById("objectType1").addEventListener("change", () => {
+        updateOnFocusObject('objectType1', 'objectName1')});
+    document.getElementById("objectType2").addEventListener("change", () => {
+        updateOnFocusObject('objectType2', 'objectName2')});
+});
 
 // Variables
 let janelaMaximizada = false;
+let showBisector = false;
 let menu = 0;
+let menuFile = 'none';
 let menuLine = 0;
 let menuPlane = 0;
 let menuPoint = 0;
 
 // First menu
+const buttonFile = document.getElementById("buttonFile");
 const buttonPoint = document.getElementById("button_point");
 const buttonLine = document.getElementById("button_line");
 const buttonPlane = document.getElementById("button_plane");
@@ -21,12 +29,22 @@ const button2D = document.getElementById("button_2D");
 const button3D = document.getElementById("button_3D");
 const buttonFaq = document.getElementById("button_faq");
 
+const controlsFile = document.getElementById("controlsFile");
 const controlsPoint = document.getElementById("controls_point");
 const controlsLine = document.getElementById("controls_line");
 const controlsPlane = document.getElementById("controls_plane");
 const controls2D = document.getElementById("controls_2D");
 const controls3D = document.getElementById("controls_3D");
 const controlsFaq = document.getElementById("controls_faq");
+
+// File menu
+const controlsFileSave = document.getElementById("controlsFileSave");
+const controlsFileLoad = document.getElementById("controlsFileLoad");
+
+const buttonFileMenuSave = document.getElementById("buttonFileMenuSave");
+const buttonFileMenuLoad = document.getElementById("buttonFileMenuLoad");
+const buttonFileSave = document.getElementById("buttonFileSave");
+const buttonFileLoad = document.getElementById("buttonFileLoad");
 
 // Point menu
 const buttonPointNew = document.getElementById("buttonPointNew");
@@ -69,27 +87,84 @@ const buttonPlanePoints = document.getElementById("buttonPlanePoints");
 
 const controlsPlanePoints = document.getElementById("controlsPlanePoints");
 
-export function showPointNameList(){
-    const datalist = document.getElementById("namePointList");
+export function showBisectorPlanes(){
+    switch (showBisector) {
+        case false:
+            b13.material.visible = true;
+            b24.material.visible = true;
+            linesB13.material.visible = true;
+            linesB24.material.visible = true;
+            showBisector = true;
+        break;
+        case true:
+            b13.material.visible = false;
+            b24.material.visible = false;
+            linesB13.material.visible = false;
+            linesB24.material.visible = false;
+            showBisector = false;
+        break;
+        default:
+            break;
+    }
+}
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+export function showPointNameList(){
+    const selectElement = document.getElementById("name");
+
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Nome';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
 
     pointNamesList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
-        datalist.appendChild(option);
+        option.textContent = name;
+        selectElement.appendChild(option);
     });
 }
 
-export function showExistingPointList(datalistId){
-    const datalist = document.getElementById(datalistId);
+export function showExistingPointList(elementId){
+    const selectElement = document.getElementById(elementId);
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Ponto';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
 
     existingPointList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
-        datalist.appendChild(option);
+        option.textContent = name;
+        selectElement.appendChild(option);
+    });
+}
+
+export function showExistingLineList(elementId){
+    const selectElement = document.getElementById(elementId);
+
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Recta';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
+
+    existingLineList.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        selectElement.appendChild(option);
     });
 }
 
@@ -156,16 +231,16 @@ export function expandirJanela(janelaID) {
         vistas3D.style.position = '';
         vistas3D.style.top = '';
         vistas3D.style.left = '';
-        vistas3D.style.width = viewWidth;
-        vistas3D.style.height = viewHeigth;
+        vistas3D.style.width = '';
+        vistas3D.style.height = '';
         vistas3D.style.flex = '';
         vistas3D.style.zIndex = '';
 
         vistas2D.style.position = '';
         vistas2D.style.top = '';
         vistas2D.style.right = '';
-        vistas2D.style.width = viewWidth;
-        vistas2D.style.height = viewHeigth;
+        vistas2D.style.width = '';
+        vistas2D.style.height = '';
         vistas2D.style.flex = '';
         vistas2D.style.zIndex = '';
 
@@ -226,6 +301,12 @@ export function selectMenu(select) {
             controlsFaq.style.display = 'block';
             menu = 6;
             break;
+
+            case 7:
+                buttonFile.style.backgroundColor = 'gray';
+                controlsFile.style.display = 'block';
+                menu = 7;
+            break;
             
             default:
             break;
@@ -244,7 +325,19 @@ export function newPoint(){
     const coordZ = +document.getElementById('coordZ').value;
     const name = document.getElementById('name').value;
 
-    createPoint(coordX, coordY, coordZ, name);
+    if (createPoint(-coordX, coordY, coordZ, name) != null) {
+        const command = {
+            action: 'create',
+            type: 'point',
+            parameters: {
+                x: -coordX,
+                y: coordY,
+                z: coordZ,
+                name: name
+            }
+        }
+        addSaveStack(command);
+    }
 
     document.getElementById('coordX').value = '';
     document.getElementById('coordY').value = '';
@@ -253,8 +346,8 @@ export function newPoint(){
 }
 
 export function newLine(){
-    const point1 = findVectorByName( point1Name.value );
-    const point2 = findVectorByName( point2Name.value );
+    const point1 = findObjectByName( point1Name.value );
+    const point2 = findObjectByName( point2Name.value );
     const pointAngle = +angle.value;
     const phpAngle = +anglePHP.value;
     const pfpAngle = +anglePFP.value;
@@ -336,7 +429,22 @@ export function newLine(){
         break;
 
         case 6:
-            createLine( createPoint(0,0,0,'',false), createPoint(1,0,0,'',false) );
+            if (phpAngle != 0) {
+                if (rigthOpeningPHP) {
+                    newX = point1.position.x - findDeviationFromAngle( point1.position.y, phpAngle);
+                } else{
+                    newX =point1.position.x + findDeviationFromAngle( point1.position.y, phpAngle);
+                }
+            } else {
+                if (rigthOpeningPFP) {
+                    newX = point1.position.x - findDeviationFromAngle( point1.position.z, pfpAngle);
+                } else{
+                    newZ =point1.position.x + findDeviationFromAngle( point1.position.z, pfpAngle);
+                }
+            }
+
+                pointTemp = createPoint(newX, 0, 0, '', false);
+                createLine( point1, pointTemp);
         break;
 
         case 7:
@@ -362,6 +470,25 @@ export function newLine(){
         break;
 
         case 8:
+            if (point1Name.value != '' && point2Name.value != '') {
+                createLine(point1, point2);
+            } else {
+                if (rigthOpeningPHP) {
+                    newY = point1.position.y + findDeviationFromAngle( 2, phpAngle);
+                } else{
+                    newY =point1.position.y - findDeviationFromAngle( 2, phpAngle);
+                }
+                if (rigthOpeningPFP) {
+                    newZ = point1.position.z + findDeviationFromAngle( 2, pfpAngle);
+                } else{
+                    newZ =point1.position.z - findDeviationFromAngle( 2, pfpAngle);
+                }
+                
+                newX = point1.position.x;
+
+                pointTemp = createPoint(newX, newY, newZ, '', false);
+                createLine( point1, pointTemp);
+            }
         break;
 
         case 9:
@@ -372,6 +499,41 @@ export function newLine(){
         default:
         break;
     }
+    switch (menuLine) {
+        case 9:
+            command = {
+                action: 'create',
+                type: 'line',
+                parameters:{
+                    point1: {
+                        name: point1.name
+                    },
+                    point2: {
+                        name: point2.name
+                    }
+                }
+            }
+            addSaveStack(command);
+        break;
+        default:
+            let command = {
+                action: 'create',
+                type: 'line',
+                parameters:{
+                    point1: {
+                        name: point1.name
+                    },
+                    point2: {
+                        name: '',
+                        x: pointTemp.position.x,
+                        y: pointTemp.position.y,
+                        z: pointTemp.position.z,
+                    }
+                }
+            }
+            addSaveStack(command);
+        break;
+    }
 }
 
 export function newPlane() {
@@ -380,11 +542,66 @@ export function newPlane() {
     const point3Name = document.getElementById('planePoint3Name').value;
 
     if (point1Name != point2Name && point2Name != point3Name && point1Name != point3Name) {
-        const point1 = findVectorByName( point1Name );
-        const point2 = findVectorByName( point2Name );
-        const point3 = findVectorByName( point3Name );
+        const point1 = findObjectByName( point1Name );
+        const point2 = findObjectByName( point2Name );
+        const point3 = findObjectByName( point3Name );
 
         createPlane(point1, point2, point3);
+    }
+}
+
+export function newIntersection( select ) {
+
+    const lineSelect = findObjectByName(document.getElementById('objectNameNotable').value);
+    let intersectionPoint;
+
+    switch (select) {
+        case 'php':
+            intersectionPoint = intersection(lineSelect, horizontalPlane);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'H' + lineSelect.name);
+        break;
+        case 'pfp':
+            intersectionPoint = intersection(lineSelect, verticalPlane);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'F' + lineSelect.name);
+        break;
+        case 'b13':
+            intersectionPoint = intersection(lineSelect, b13);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'Q' + lineSelect.name);
+        break;
+        case 'b24':
+            intersectionPoint = intersection(lineSelect, b24);
+            createPoint(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z, 'I' + lineSelect.name);
+        break;
+        default:
+            // Fazer para intersecções de objectos no geral.
+            break;
+    }
+}
+
+export function selectMenuFile ( select ){
+    if (menuFile == 'none' || menuFile != select){
+
+        clearMenuFile();
+
+        switch (select) {
+            case 'save':
+                buttonFileMenuSave.style.backgroundColor = 'gray';
+                controlsFileSave.style.display = 'block';
+                menuFile = select;
+            break;
+            case 'load':
+                buttonFileMenuLoad.style.backgroundColor = 'gray';
+                controlsFileLoad.style.display = 'block';
+                menuFile = select;
+            break;
+        
+            default:
+                break;
+        }
+
+    } else {
+        clearMenuFile();
+        menuFile = 'none';
     }
 }
 
@@ -469,11 +686,8 @@ export function selectMenuLine( select ){
             case 6:
                 buttonLinePass.style.backgroundColor = 'gray';
                 controlsLinePoint.style.display = 'block';
-                spanPoint1Name.style.display = 'none';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
-                spanAnglePFP.style.display = 'none';
-                spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
             case 7:
@@ -526,6 +740,7 @@ export function selectMenuPlane( select ) {
 }
 
 function clearMenu(){
+    buttonFile.style.backgroundColor = '';
     buttonPoint.style.backgroundColor = '';
     buttonLine.style.backgroundColor = '';
     buttonPlane.style.backgroundColor = '';
@@ -533,6 +748,7 @@ function clearMenu(){
     button2D.style.backgroundColor = '';
     buttonFaq.style.backgroundColor = '';
 
+    controlsFile.style.display = 'none';
     controlsPoint.style.display = 'none';
     controlsLine.style.display = 'none';
     controlsPlane.style.display = 'none';
@@ -543,6 +759,20 @@ function clearMenu(){
     clearMenuLine();
     clearMenuPlane();
     clearMenuPoint();
+    clearMenuFile();
+
+    menuLine = 0;
+    menuPlane = 0;
+    menuPoint = 0;
+    menuFile = 'none';
+}
+
+function clearMenuFile() {
+    buttonFileMenuLoad.style.backgroundColor = '';
+    buttonFileMenuSave.style.backgroundColor = '';
+    
+    controlsFileSave.style.display = 'none';
+    controlsFileLoad.style.display = 'none';
 }
 
 function clearMenuPoint() {
@@ -581,43 +811,16 @@ function clearMenuPlane() {
     controlsPlanePoints.style.display = 'none';
 }
 
-function updateOnFocusObject1() {
-    const selectObject = document.getElementById("objectType1");
-    const inputObject = document.getElementById("objectName1");
-    const datalistId = inputObject.getAttribute("list");
-    const datalist = document.getElementById("object1");
+function updateOnFocusObject(select, input) {
+    const selectObject = document.getElementById(select);
+    const inputObject = document.getElementById(input);
 
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    while (inputObject.firstChild) inputObject.removeChild(inputObject.firstChild);
     inputObject.onfocus = null;
 
     switch (selectObject.value) {
         case "point":
-            inputObject.onfocus = showExistingPointList(datalistId);
-        break;
-        case "line":
-            // inputObject.onfocus = showExistingLineList;
-        break;
-        case "plane":
-            // inputObject.onfocus = showExistingPlaneList;
-        break;
-    
-        default:
-            break;
-    }
-}
-
-function updateOnFocusObject2() {
-    const selectObject = document.getElementById("objectType2");
-    const inputObject = document.getElementById("objectName2");
-    const datalistId = inputObject.getAttribute("list");
-    const datalist = document.getElementById("object2");
-
-    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
-    inputObject.onfocus = null;
-
-    switch (selectObject.value) {
-        case "point":
-            inputObject.onfocus = showExistingPointList(datalistId);
+            inputObject.onfocus = showExistingPointList(input);
         break;
         case "line":
             // inputObject.onfocus = showExistingLineList;
