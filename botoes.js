@@ -24,7 +24,7 @@ let janelaMaximizada = false;
 let showBisector = false;
 let menu = 0;
 let menuFile = 'none';
-let menuLine = 0;
+let menuLine = 'none';
 let menuPlane = 'none';
 let menuPoint = 0;
 
@@ -353,14 +353,14 @@ export function newLine(){
     let newX, newY, newZ, pointTemp;
 
     switch (menuLine) {
-        case 1:
+        case 'horizontal':
             newZ = findDeviationFromAngle(2, pointAngle) + point1.position.z;
             newY = point1.position.y;
             
             if (rigthOpening) {
-                newX = point1.position.x - 2;
-            } else{
                 newX = point1.position.x + 2;
+            } else{
+                newX = point1.position.x - 2;
             }
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
@@ -368,14 +368,14 @@ export function newLine(){
             createLine(point1, pointTemp);
         break;
 
-        case 2:
+        case 'frontal':
             newY = findDeviationFromAngle(2, pointAngle) + point1.position.y;
             newZ = point1.position.z;
             
             if (rigthOpening) {
-                newX = point1.position.x - 2;
-            } else{
                 newX = point1.position.x + 2;
+            } else{
+                newX = point1.position.x - 2;
             }
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
@@ -383,7 +383,7 @@ export function newLine(){
             createLine(point1, pointTemp);
         break;
 
-        case 3:
+        case 'frontalHorizontal':
             newX = point1.position.x - 2;
 
             pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
@@ -391,7 +391,7 @@ export function newLine(){
             createLine( point1, pointTemp);
         break;
 
-        case 4:
+        case 'top':
             newZ = point1.position.z + 2;
 
             pointTemp = createPoint(point1.position.x, point1.position.y, newZ, "", false);
@@ -399,7 +399,7 @@ export function newLine(){
             createLine( point1, pointTemp);
         break;
         
-        case 5:
+        case 'vertical':
             newY = point1.position.y + 2;
 
             pointTemp = createPoint(point1.position.x, newY, point1.position.z, "", false);
@@ -407,7 +407,7 @@ export function newLine(){
             createLine( point1, pointTemp);
         break;
 
-        case 6:
+        case 'pass':
             if (phpAngle != 0) {
                 if (rigthOpeningPHP) {
                     newX = point1.position.x - findDeviationFromAngle( point1.position.y, phpAngle);
@@ -426,7 +426,7 @@ export function newLine(){
                 createLine( point1, pointTemp);
         break;
 
-        case 7:
+        case 'oblique':
             if (point1Name.value != '' && point2Name.value != '') {
                 createLine(point1, point2);
             } else {
@@ -448,7 +448,7 @@ export function newLine(){
             }
         break;
 
-        case 8:
+        case 'perfil':
             if (point1Name.value != '' && point2Name.value != '') {
                 createLine(point1, point2);
             } else {
@@ -470,7 +470,7 @@ export function newLine(){
             }
         break;
 
-        case 9:
+        case 'points':
             if (point1 != point2) {
                 createLine( point1, point2);
             }
@@ -479,7 +479,7 @@ export function newLine(){
         break;
     }
     switch (menuLine) {
-        case 9:
+        case 'points':
             command = {
                 action: 'create',
                 type: 'line',
@@ -751,12 +751,12 @@ export function selectMenuPoint( select ){
 }
 
 export function selectMenuLine( select ){
-    if (menuLine == 0 || menuLine != select) {
+    if (menuLine == 'none' || menuLine != select) {
 
         clearMenuLine();
 
         switch (select) {
-            case 1:
+            case 'horizontal':
                 buttonLineLevel.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
@@ -764,7 +764,7 @@ export function selectMenuLine( select ){
                 spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
-            case 2:
+            case 'frontal':
                 buttonLineFrontal.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
@@ -772,7 +772,7 @@ export function selectMenuLine( select ){
                 spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
-            case 3:
+            case 'frontalHorizontal':
                 buttonLineFrontoHorizontal.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
@@ -781,7 +781,7 @@ export function selectMenuLine( select ){
                 spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
-            case 4:
+            case 'top':
                 buttonLineTopo.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
@@ -790,7 +790,7 @@ export function selectMenuLine( select ){
                 spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
-            case 5:
+            case 'vertical':
                 buttonLineVertical.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
@@ -799,26 +799,26 @@ export function selectMenuLine( select ){
                 spanAnglePHP.style.display = 'none';
                 menuLine = select;
             break;
-            case 6:
+            case 'pass':
                 buttonLinePass.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
-            case 7:
+            case 'oblique':
                 buttonLineOblique.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
-            case 8:
+            case 'perfil':
                 buttonLinePerfil.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
-            case 9:
+            case 'points':
                 buttonLinePoint.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
@@ -831,7 +831,7 @@ export function selectMenuLine( select ){
         }
     } else {
         clearMenuLine();
-        menuLine = 0;
+        menuLine = 'none';
     }
 }
 
