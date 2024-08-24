@@ -1,6 +1,6 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.124.0/examples/jsm/controls/OrbitControls.js';
-import { saveScene, downloadJSON, readJSONFile, loadObject } from './fileUtils.js';
+import { saveScene, downloadJSON, readJSONFile, loadObject, clearSaveStack } from './fileUtils.js';
 import { createNamesLists } from './create.js';
 
 
@@ -215,6 +215,7 @@ function clearScene(scene) {
 export function clearAllScenes() {
     clearScene(scene2d);
     clearScene(scene3d);
+    clearSaveStack();
     createInitialScenes();
 }
 
@@ -228,9 +229,7 @@ export function load(){
     }
 
     readJSONFile(file, (loadedScene) => {
-        clearScene(scene2d);
-        clearScene(scene3d);
-        createInitialScenes();
+        clearAllScenes();
 
         loadedScene.forEach(loadObject);
     });

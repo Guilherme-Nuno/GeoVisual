@@ -74,4 +74,10 @@ export function loadObject( object ) {
         default:
             break;
     }
+
+    addSaveStack( object );
+}
+
+export function clearSaveStack() {
+    saveStack.length = 0;
 }
