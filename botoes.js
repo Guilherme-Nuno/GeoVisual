@@ -3,12 +3,20 @@ import { createPoint, pointNamesList, existingPointList, createLine, createPlane
 import { findDeviationFromAngle, intersection } from "./calculations.js";
 import { addSaveStack } from "./fileUtils.js";
 
+const BUTTONSELECTCOLOR = 'gray';
+
 document.addEventListener("DOMContentLoaded", function() {
     // Event Listeners
     document.getElementById("objectType1").addEventListener("change", () => {
         updateOnFocusObject('objectType1', 'objectName1')});
     document.getElementById("objectType2").addEventListener("change", () => {
         updateOnFocusObject('objectType2', 'objectName2')});
+    document.getElementById("object1PlaneType").addEventListener("change", () => {
+        updateOnFocusObject('object1PlaneType', 'object1PlaneName')});
+    document.getElementById("object2PlaneType").addEventListener("change", () => {
+        updateOnFocusObject('object2PlaneType', 'object2PlaneName')});
+    document.getElementById("object3PlaneType").addEventListener("change", () => {
+        updateOnFocusObject('object3PlaneType', 'object3PlaneName')});
 });
 
 // Variables
@@ -17,7 +25,7 @@ let showBisector = false;
 let menu = 0;
 let menuFile = 'none';
 let menuLine = 0;
-let menuPlane = 0;
+let menuPlane = 'none';
 let menuPoint = 0;
 
 // First menu
@@ -84,6 +92,37 @@ const pfpSelect = document.getElementById("pfpSelect");
 
 // Plane menu
 const buttonPlanePoints = document.getElementById("buttonPlanePoints");
+const buttonPlaneHorizontal = document.getElementById("buttonPlaneHorizontal");
+const buttonPlaneFrontal = document.getElementById("buttonPlaneFrontal");
+const buttonPlaneOblique = document.getElementById("buttonPlaneOblique");
+const buttonPlanePerfil = document.getElementById("buttonPlanePerfil");
+const buttonPlaneRamp = document.getElementById("buttonPlaneRamp");
+const buttonPlaneTop = document.getElementById("buttonPlaneTop");
+const buttonPlaneVertical = document.getElementById("buttonPlaneVertical");
+const buttonPlaneLines = document.getElementById("buttonPlaneLines");
+const buttonPlaneLinePoint = document.getElementById("buttonPlaneLinePoint");
+
+const controlsPlaneMenu = document.getElementById("controlsPlaneMenu");
+
+const object1Plane = document.getElementById("object1Plane");
+const object1PlaneType = document.getElementById("object1PlaneType");
+const object1PlaneName = document.getElementById("object1PlaneName");
+
+const object2Plane = document.getElementById("object2Plane");
+const object2PlaneType = document.getElementById("object2PlaneType");
+const object2PlaneName = document.getElementById("object2PlaneName");
+
+const object3Plane = document.getElementById("object3Plane");
+const object3PlaneType = document.getElementById("object3PlaneType");
+const object3PlaneName = document.getElementById("object3PlaneName");
+
+const spanPlaneAnglePHP = document.getElementById("spanPlaneAnglePHP");
+const planeAnglePHP = document.getElementById("planeAnglePHP");
+const planePhpSelect = document.getElementById("planePhpSelect");
+
+const spanPlaneAnglePFP = document.getElementById("spanPlaneAnglePFP");
+const planeAnglePFP = document.getElementById("planeAnglePFP");
+const planePfpSelect = document.getElementById("planePfpSelect");
 
 const controlsPlanePoints = document.getElementById("controlsPlanePoints");
 
@@ -256,66 +295,6 @@ export function expandirJanela(janelaID) {
         box.style.flex = '';
 
         janelaMaximizada = false;
-    }
-}
-
-export function selectMenu(select) {
-
-    if (menu == 0 || menu != select) {
-
-        clearMenu();
-
-        switch (select) {
-            case 1:
-            buttonPoint.style.backgroundColor = 'gray';
-            controlsPoint.style.display = 'block';
-            menu = 1;
-            break;
-                
-            case 2:
-            buttonLine.style.backgroundColor = 'gray';
-            controlsLine.style.display = 'block';
-            menu = 2;
-            break;
-
-            case 3:
-            buttonPlane.style.backgroundColor = 'gray';
-            controlsPlane.style.display = 'block';
-            menu = 3;
-            break;
-
-            case 4:
-            button2D.style.backgroundColor = 'gray';
-            controls2D.style.display = 'block';
-            menu = 4;
-            break;
-
-            case 5:
-            button3D.style.backgroundColor = 'gray';
-            controls3D.style.display = 'block';
-            menu = 5;
-            break;
-
-            case 6:
-            buttonFaq.style.backgroundColor = 'gray';
-            controlsFaq.style.display = 'block';
-            menu = 6;
-            break;
-
-            case 7:
-                buttonFile.style.backgroundColor = 'gray';
-                controlsFile.style.display = 'block';
-                menu = 7;
-            break;
-            
-            default:
-            break;
-        }
-    } else {
-
-        clearMenu();
-
-        menu = 0;
     }
 }
 
@@ -537,16 +516,89 @@ export function newLine(){
 }
 
 export function newPlane() {
-    const point1Name = document.getElementById('planePoint1Name').value;
-    const point2Name = document.getElementById('planePoint2Name').value;
-    const point3Name = document.getElementById('planePoint3Name').value;
+    const object1Type = object1PlaneType.value;
+    const object2Type = object2PlaneType.value;
+    const object3Type = object3PlaneType.value;
 
-    if (point1Name != point2Name && point2Name != point3Name && point1Name != point3Name) {
-        const point1 = findObjectByName( point1Name );
-        const point2 = findObjectByName( point2Name );
-        const point3 = findObjectByName( point3Name );
+    const object1Original = findObjectByName(object1PlaneName.value);
+    const object2Original = findObjectByName(object2PlaneName.value);
+    const object3Original = findObjectByName(object3PlaneName.value);
 
-        createPlane(point1, point2, point3);
+    let object1, object2, object3, objectTemp1, objectTemp2;
+
+    if (object1Type == 'point') {
+        object1 = object1Original;
+    } else if (object1Type == 'line') {
+        object1 = object1Original.geoChild[0];
+        object2 = object1Original.geoChild[1];
+    }
+
+    // Transformar as rectas em pontos
+
+    switch (menuPlane) {
+        case 'frontal':
+            if (object1Type == 'point') {
+                objectTemp1 = createPoint(object1.position.x + 2, object1.position.y + 2, object1.position.z, '', false);
+                objectTemp2 = createPoint(object1.position.x - 2, object1.position.y + 2, object1.position.z, '', false);
+                createPlane(object1, objectTemp1, objectTemp2);
+            } else if (object1Type == 'line'){
+                if (object1.position.x == object2.position.x) {
+                    objectTemp1 = createPoint(
+                        object1.position.x - 2,
+                        3 * (object1.position.y + object2.position.y) / 4,
+                        object1.position.z, '', false);
+                } else {
+                    objectTemp1 = createPoint(
+                        (object1.position.x - object2.position.x) / 2,
+                        3 * (object1.position.y + object2.position.y) / 4,
+                        object1.position.z, '', false);
+                }
+                createPlane(object1, object2, objectTemp1);
+            }
+        break;
+        case 'horizontal':
+            if (object1Type == 'point') {
+                objectTemp1 = createPoint(object1.position.x + 2, object1.position.y, object1.position.z + 2, '', false);
+                objectTemp2 = createPoint(object1.position.x - 2, object1.position.y, object1.position.z + 2, '', false);
+                createPlane(object1, objectTemp1, objectTemp2);
+            } else if (object1Type == 'line'){
+                if (object1.position.x == object2.position.x) {
+                    objectTemp1 = createPoint(
+                        object1.position.x - 2,
+                        object1.position.y,
+                        3 * (object1.position.z + object2.position.z) / 4, '', false);
+                } else {
+                    objectTemp1 = createPoint(
+                        (object1.position.x - object2.position.x) / 2,
+                        object1.position.y,
+                        3 * (object1.position.z + object2.position.z) / 4, '', false);
+                }
+                createPlane(object1, object2, objectTemp1);
+            }
+        break;
+        case 'perfil':
+            if (object1Type == 'point') {
+                objectTemp1 = createPoint(object1.position.x, object1.position.y + 2, object1.position.z + 2, '', false);
+                objectTemp2 = createPoint(object1.position.x, object1.position.y - 2, object1.position.z + 2, '', false);
+                createPlane(object1, objectTemp1, objectTemp2);
+            } else if (object1Type == 'line') {
+                objectTemp1 = createPoint(
+                    object1.position.x,
+                    3 * (object1.position.y + object2.position.y) / 4,
+                    3 * (object1.position.z + object2.position.z) / 4, '', false);
+                createPlane(object1, object2, objectTemp1);
+            }
+        break;
+        case 'oblique':
+            break;
+        case 'ramp':
+            break;
+        case 'top':
+            break;
+        case 'vertical':
+            break;
+        default:
+            break;
     }
 }
 
@@ -578,6 +630,66 @@ export function newIntersection( select ) {
     }
 }
 
+export function selectMenu(select) {
+
+    if (menu == 0 || menu != select) {
+
+        clearMenu();
+
+        switch (select) {
+            case 1:
+            buttonPoint.style.backgroundColor = BUTTONSELECTCOLOR;
+            controlsPoint.style.display = 'block';
+            menu = 1;
+            break;
+                
+            case 2:
+            buttonLine.style.backgroundColor = BUTTONSELECTCOLOR;
+            controlsLine.style.display = 'block';
+            menu = 2;
+            break;
+
+            case 3:
+            buttonPlane.style.backgroundColor = BUTTONSELECTCOLOR;
+            controlsPlane.style.display = 'block';
+            menu = 3;
+            break;
+
+            case 4:
+            button2D.style.backgroundColor = BUTTONSELECTCOLOR;
+            controls2D.style.display = 'block';
+            menu = 4;
+            break;
+
+            case 5:
+            button3D.style.backgroundColor = BUTTONSELECTCOLOR;
+            controls3D.style.display = 'block';
+            menu = 5;
+            break;
+
+            case 6:
+            buttonFaq.style.backgroundColor = BUTTONSELECTCOLOR;
+            controlsFaq.style.display = 'block';
+            menu = 6;
+            break;
+
+            case 7:
+                buttonFile.style.backgroundColor = BUTTONSELECTCOLOR;
+                controlsFile.style.display = 'block';
+                menu = 7;
+            break;
+            
+            default:
+            break;
+        }
+    } else {
+
+        clearMenu();
+
+        menu = 0;
+    }
+}
+
 export function selectMenuFile ( select ){
     if (menuFile == 'none' || menuFile != select){
 
@@ -585,12 +697,12 @@ export function selectMenuFile ( select ){
 
         switch (select) {
             case 'save':
-                buttonFileMenuSave.style.backgroundColor = 'gray';
+                buttonFileMenuSave.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsFileSave.style.display = 'block';
                 menuFile = select;
             break;
             case 'load':
-                buttonFileMenuLoad.style.backgroundColor = 'gray';
+                buttonFileMenuLoad.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsFileLoad.style.display = 'block';
                 menuFile = select;
             break;
@@ -605,6 +717,8 @@ export function selectMenuFile ( select ){
     }
 }
 
+
+
 export function selectMenuPoint( select ){
     if (menuPoint == 0 || menuPoint != select) {
         
@@ -612,17 +726,17 @@ export function selectMenuPoint( select ){
 
         switch (select) {
             case 1:
-                buttonPointNew.style.backgroundColor = 'gray';
+                buttonPointNew.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsPointNew.style.display = 'block';
                 menuPoint = select;
             break;
             case 2:
-                buttonPointIntersection.style.backgroundColor = 'gray';
+                buttonPointIntersection.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsPointIntersection.style.display = 'block';
                 menuPoint = select;
             break;
             case 3:
-                buttonPointNotable.style.backgroundColor = 'gray';
+                buttonPointNotable.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsPointNotable.style.display = 'block';
                 menuPoint = select;
             default:
@@ -641,7 +755,7 @@ export function selectMenuLine( select ){
 
         switch (select) {
             case 1:
-                buttonLineLevel.style.backgroundColor = 'gray';
+                buttonLineLevel.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAnglePFP.style.display = 'none';
@@ -649,7 +763,7 @@ export function selectMenuLine( select ){
                 menuLine = select;
             break;
             case 2:
-                buttonLineFrontal.style.backgroundColor = 'gray';
+                buttonLineFrontal.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAnglePFP.style.display = 'none';
@@ -657,7 +771,7 @@ export function selectMenuLine( select ){
                 menuLine = select;
             break;
             case 3:
-                buttonLineFrontoHorizontal.style.backgroundColor = 'gray';
+                buttonLineFrontoHorizontal.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
@@ -666,7 +780,7 @@ export function selectMenuLine( select ){
                 menuLine = select;
             break;
             case 4:
-                buttonLineTopo.style.backgroundColor = 'gray';
+                buttonLineTopo.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
@@ -675,7 +789,7 @@ export function selectMenuLine( select ){
                 menuLine = select;
             break;
             case 5:
-                buttonLineVertical.style.backgroundColor = 'gray';
+                buttonLineVertical.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
@@ -684,26 +798,26 @@ export function selectMenuLine( select ){
                 menuLine = select;
             break;
             case 6:
-                buttonLinePass.style.backgroundColor = 'gray';
+                buttonLinePass.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanPoint2Name.style.display = 'none';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
             case 7:
-                buttonLineOblique.style.backgroundColor = 'gray';
+                buttonLineOblique.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
             case 8:
-                buttonLinePerfil.style.backgroundColor = 'gray';
+                buttonLinePerfil.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
                 menuLine = select;
             break;
             case 9:
-                buttonLinePoint.style.backgroundColor = 'gray';
+                buttonLinePoint.style.backgroundColor = BUTTONSELECTCOLOR;
                 controlsLinePoint.style.display = 'block';
                 spanAngle.style.display = 'none';
                 spanAnglePFP.style.display = 'none';
@@ -720,22 +834,82 @@ export function selectMenuLine( select ){
 }
 
 export function selectMenuPlane( select ) {
-    if (menuPlane == 0 || menuPlane != select) {
+    if (menuPlane == 'none' || menuPlane != select) {
         clearMenuPlane();
 
+        controlsPlaneMenu.style.display = 'block';
+
         switch (select) {
-            case 11:
-                buttonPlanePoints.style.background = 'gray';
-                controlsPlanePoints.style.display = 'block';
+            case 'horizontal':
+                buttonPlaneHorizontal.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
                 menuPlane = select;
-                break;
+            break;
+            case 'frontal':
+                buttonPlaneFrontal.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'oblique':
+                buttonPlaneOblique.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                object3Plane.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'perfil':
+                buttonPlanePerfil.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'ramp':
+                buttonPlaneRamp.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                spanPlaneAnglePHP.style.display = 'inline';
+                spanPlaneAnglePFP.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'top':
+                buttonPlaneTop.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                spanPlaneAnglePHP.style.display = 'inline';
+                spanPlaneAnglePFP.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'vertical':
+                buttonPlaneVertical.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                spanPlaneAnglePHP.style.display = 'inline';
+                spanPlaneAnglePFP.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'lines':
+                buttonPlaneLines.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'linePoint':
+                buttonPlaneLinePoint.style.backgroundColor = BUTTONSELECTCOLOR;
+                object1Plane.style.display = 'inline';
+                object2Plane.style.display = 'inline';
+                menuPlane = select;
+            break;
+            case 'points':
+                buttonPlanePoints.style.background = BUTTONSELECTCOLOR;
+                controlsPlanePoints.style.display = 'inline';
+                menuPlane = select;
+            break;
             
             default:
-                break;
+            break;
         }
     } else {
         clearMenuPlane();
-        menuPlane = 0;
+        menuPlane = 'none';
     }
 }
 
@@ -805,10 +979,26 @@ function clearMenuLine(){
     spanAnglePHP.style.display = '';
 }
 
-function clearMenuPlane() {
+function clearMenuPlane() { 
+    buttonPlaneHorizontal.style.backgroundColor = '';
+    buttonPlaneFrontal.style.backgroundColor = '';
+    buttonPlaneOblique.style.backgroundColor = '';
+    buttonPlanePerfil.style.backgroundColor = '';
+    buttonPlaneRamp.style.backgroundColor = '';
+    buttonPlaneTop.style.backgroundColor = '';
+    buttonPlaneVertical.style.backgroundColor = '';
+    buttonPlaneLines.style.backgroundColor = '';
+    buttonPlaneLinePoint.style.backgroundColor = '';
     buttonPlanePoints.style.backgroundColor = '';
 
     controlsPlanePoints.style.display = 'none';
+    controlsPlaneMenu.style.display = 'none';
+
+    object1Plane.style.display = 'none';
+    object2Plane.style.display = 'none';
+    object3Plane.style.display = 'none';
+    spanPlaneAnglePHP.style.display = 'none';
+    spanPlaneAnglePFP.style.display = 'none';
 }
 
 function updateOnFocusObject(select, input) {
@@ -823,7 +1013,7 @@ function updateOnFocusObject(select, input) {
             inputObject.onfocus = showExistingPointList(input);
         break;
         case "line":
-            // inputObject.onfocus = showExistingLineList;
+            inputObject.onfocus = showExistingLineList(input);
         break;
         case "plane":
             // inputObject.onfocus = showExistingPlaneList;

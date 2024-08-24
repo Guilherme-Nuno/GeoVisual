@@ -176,7 +176,7 @@ function createInitialScenes() {
     scene3d.add(cube3d);
     scene3d.add(linesCube3d);
     */
-   
+
    createNamesLists();
 }
 
@@ -202,7 +202,7 @@ export function findObjectByName( name ){
 
 export function save(){
     const jsonData = saveScene( scene2d, scene3d);
-    downloadJSON( jsonData, 'scene.json');
+    downloadJSON( jsonData, 'scene.gvis');
 }
 
 function clearScene(scene) {

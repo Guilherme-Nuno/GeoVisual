@@ -17,6 +17,8 @@ export function draw3dPlane (object){
             break;
         case "Line":
             const line = object.clone();
+            line.geoType = object.geoType;
+            line.geoChild = object.geoChild;
             group3d.add(line);
             break;
         case "Plane":
@@ -161,37 +163,40 @@ export function draw2dPlane ( object ) {
             const line2HorizontalPoint = intersection(object.geoChild[1], horizontalPlane);
             const line2VerticalPoint = intersection(object.geoChild[1], verticalPlane);
 
-            createPoint(line1HorizontalPoint.x, line1HorizontalPoint.y, line1HorizontalPoint.z, '', false);
-            createPoint(line2HorizontalPoint.x, line2HorizontalPoint.y, line2HorizontalPoint.z, '', false);
-
-            createPoint(line1VerticalPoint.x, line1VerticalPoint.y, line1VerticalPoint.z, '', false);
-            createPoint(line2VerticalPoint.x, line2VerticalPoint.y, line2VerticalPoint.z, '', false);
-
-            const line1HorizontalPoint2d = line1HorizontalPoint.clone();
-            line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;
-            line1HorizontalPoint2d.z = 0;
-
-            const line2HorizontalPoint2d = line2HorizontalPoint.clone();
-            line2HorizontalPoint2d.y = 0 - line2HorizontalPoint2d.z;
-            line2HorizontalPoint2d.z = 0;
+            
 
             // Use points to draw Plane projections
-            const pHorizontalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1HorizontalPoint2d, line2HorizontalPoint2d));
-            const lineMaterialHorizontal = new THREE.LineBasicMaterial( {color: 'black'} );
-            const planeHorizontalLine = new THREE.LineSegments(pHorizontalLine, lineMaterialHorizontal);
+            if (line1HorizontalPoint != null && line2HorizontalPoint != null) {
+                const line1HorizontalPoint2d = line1HorizontalPoint.clone();
+                line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;
+                line1HorizontalPoint2d.z = 0;
 
-            group2d.add(planeHorizontalLine);
+                const line2HorizontalPoint2d = line2HorizontalPoint.clone();
+                line2HorizontalPoint2d.y = 0 - line2HorizontalPoint2d.z;
+                line2HorizontalPoint2d.z = 0;
 
-            const pVerticalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1VerticalPoint, line2VerticalPoint));
-            const lineMaterialVertical = new THREE.LineBasicMaterial( {color: 'black'} );
-            const planeVerticalLine = new THREE.LineSegments(pVerticalLine, lineMaterialVertical);
+                const pHorizontalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1HorizontalPoint2d, line2HorizontalPoint2d));
+                const lineMaterialHorizontal = new THREE.LineBasicMaterial( {color: 'black'} );
+                const planeHorizontalLine = new THREE.LineSegments(pHorizontalLine, lineMaterialHorizontal);
 
-            group2d.add(planeVerticalLine);
+                group2d.add(planeHorizontalLine);
 
-            const planeLabelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
-            const planeLabelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
-            group2d.add(planeLabelVertical);
-            group2d.add(planeLabelHorizontal);
+                const planeLabelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
+
+                group2d.add(planeLabelHorizontal);
+            }
+
+            if (line1VerticalPoint != null && line2VerticalPoint != null) {
+                const pVerticalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1VerticalPoint, line2VerticalPoint));
+                const lineMaterialVertical = new THREE.LineBasicMaterial( {color: 'black'} );
+                const planeVerticalLine = new THREE.LineSegments(pVerticalLine, lineMaterialVertical);
+
+                group2d.add(planeVerticalLine);
+
+                const planeLabelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
+            
+                group2d.add(planeLabelVertical);
+            }
             break;
 
         case "Shape":

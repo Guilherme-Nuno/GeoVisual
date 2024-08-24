@@ -17,6 +17,7 @@
     window.newIntersection = BUTTON.newIntersection;
     window.showExistingLineList = BUTTON.showExistingLineList;
     window.selectMenuFile = BUTTON.selectMenuFile;
+    window.newPlane = BUTTON.newPlane;
 
     import { save, load } from "./main.js";
     window.save = save;
@@ -173,20 +174,65 @@
             </div>
 
             <div class="controls_plane" id="controls_plane">
-                <button class="botoes_controlos">Nível</button>
-                <button class="botoes_controlos">Frente</button>
-                <button class="botoes_controlos">Oblíquo</button>
-                <button class="botoes_controlos">Passante</button>
-                <button class="botoes_controlos">Perfil</button>
-                <button class="botoes_controlos">Rampa</button>
-                <button class="botoes_controlos">Topo</button>
-                <button class="botoes_controlos">Vertical</button>
-                <button class="botoes_controlos">2 Rectas</button>
-                <button class="botoes_controlos">Recta e Ponto</button>
-                <button class="botoes_controlos" id="buttonPlanePoints" onclick="selectMenuPlane(11)">3 Pontos</button>
+                <button class="botoes_controlos" id="buttonPlaneHorizontal" onclick="selectMenuPlane('horizontal')">Horizontal</button>
+                <button class="botoes_controlos" id="buttonPlaneFrontal" onclick="selectMenuPlane('frontal')">Frontal</button>
+                <button class="botoes_controlos" id="buttonPlaneOblique" onclick="selectMenuPlane('oblique')">Oblíquo</button>
+                <button class="botoes_controlos" id="buttonPlanePerfil" onclick="selectMenuPlane('perfil')">Perfil</button>
+                <button class="botoes_controlos" id="buttonPlaneRamp" onclick="selectMenuPlane('ramp')">Rampa</button>
+                <button class="botoes_controlos" id="buttonPlaneTop" onclick="selectMenuPlane('top')">Topo</button>
+                <button class="botoes_controlos" id="buttonPlaneVertical" onclick="selectMenuPlane('vertical')">Vertical</button>
+                <button class="botoes_controlos" id="buttonPlaneLines" onclick="selectMenuPlane('lines')">2 Rectas</button>
+                <button class="botoes_controlos" id="buttonPlaneLinePoint" onclick="selectMenuPlane('linePoint')">Recta e Ponto</button>
+                <button class="botoes_controlos" id="buttonPlanePoints" onclick="selectMenuPlane('points')">3 Pontos</button>
 
-                <div class="controlsPlaneLines" id="controlsPlaneLines">
+                <div class="controlsPlaneMenu" id="controlsPlaneMenu">
+                    <span class="objectPlane" id="object1Plane">
+                        <select id="object1PlaneType">
+                            <option value="" disabled selected>Selecione opção</option>
+                            <option value="point">Ponto</option>
+                            <option value="line">Recta</option>
+                            <option value="plane">Plano</option>
+                        </select>
+                        <select id="object1PlaneName" class="input-coord" placeholder="Nome"></select>
+                    </span>
+                    <span class="objectPlane" id="object2Plane">
+                        <select id="object2PlaneType">
+                            <option value="" disabled selected>Selecione opção</option>
+                            <option value="point">Ponto</option>
+                            <option value="line">Recta</option>
+                            <option value="plane">Plano</option>
+                        </select>
+                        <select id="object2PlaneName" class="input-coord" placeholder="Nome"></select>
+                    </span>
+                    <span class="objectPlane" id="object3Plane">
+                        <select id="object3PlaneType">
+                            <option value="" disabled selected>Selecione opção</option>
+                            <option value="point">Ponto</option>
+                            <option value="line">Recta</option>
+                            <option value="plane">Plano</option>
+                        </select>
+                        <select id="object3PlaneName" class="input-coord" placeholder="Nome"></select>
+                    </span>
+                    <span id="spanPlaneAnglePHP">
+                        Angulo PHP:
+                        <input type="number" id="planeAnglePHP" class="input-coord" placeholder="Angulo PHP">
+                        Abertura:
+                        <select id="planePhpSelect">
+                            <option value="rigth">Direita</option>
+                            <option value="left">Esquerda</option>
+                        </select>
+                    </span>
+                    <span id="spanPlaneAnglePFP">
+                        Angulo PFP:
+                        <input type="number" id="planeAnglePFP" class="input-coord" placeholder="Angulo PHP">
+                        Abertura:
+                        <select id="planePfpSelect">
+                            <option value="rigth">Direita</option>
+                            <option value="left">Esquerda</option>
+                        </select>
+                    </span>
 
+                    <button class="botoes_controlos" onclick="newPlane()">CRIAR</button>
                 </div>
                 <div class="controlsPlanePoints" id="controlsPlanePoints">
                     <label for="point1">Ponto 1:</label> 
