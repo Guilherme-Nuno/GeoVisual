@@ -212,6 +212,12 @@ function clearScene(scene) {
     }
 }
 
+export function clearAllScenes() {
+    clearScene(scene2d);
+    clearScene(scene3d);
+    createInitialScenes();
+}
+
 export function load(){
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];

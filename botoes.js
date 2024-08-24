@@ -1,4 +1,4 @@
-import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane } from "./main.js";
+import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane, clearAllScenes } from "./main.js";
 import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList } from "./create.js";
 import { findDeviationFromAngle, intersection } from "./calculations.js";
 import { addSaveStack } from "./fileUtils.js";
@@ -706,7 +706,9 @@ export function selectMenuFile ( select ){
                 controlsFileLoad.style.display = 'block';
                 menuFile = select;
             break;
-        
+            case 'clear':
+                clearAllScenes();
+                menuFile = 'none';
             default:
                 break;
         }
