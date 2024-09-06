@@ -3,6 +3,8 @@ import { createLine, createLineSegment, createPoint, createTextLabel } from './c
 import { scene2d, scene3d, horizontalPlane, verticalPlane } from './main.js';
 import { intersection, findMaxPoints } from './calculations.js';
 
+const LINECOLOR = 'black';
+
 export function draw3dPlane (object){
     const group3d = new THREE.Group();
 
@@ -48,7 +50,10 @@ export function draw3dPlane (object){
     return group3d;
 }
 
-// Creates the various drawings for the representation of an object on the diedric projection
+/**
+ * Creates the various drawings for the representation of an object on the diedric projection
+ * @param {any} object 
+ */
 export function draw2dPlane ( object ) {
     const verticesVertical = [];
     const verticesHorizontal = [];
@@ -80,14 +85,8 @@ export function draw2dPlane ( object ) {
 
     switch (object.geoType) {
         case "Line":
-            const lineVertical = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesVertical),
-                new THREE.LineBasicMaterial( {color: 'black'} )
-            );
-            const lineHorizontal = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesHorizontal),
-                new THREE.LineBasicMaterial( {color: 'black'} )
-            );
+            const lineVertical = createBasicLineSegments(verticesVertical, LINECOLOR);
+            const lineHorizontal = createBasicLineSegments(verticesHorizontal, LINECOLOR);
     
             group2d.add(lineVertical);
             group2d.add(lineHorizontal);
@@ -95,34 +94,26 @@ export function draw2dPlane ( object ) {
             // Adicionar texto para linhas
             const labelVertical1 = createTextLabel(object.name + '2', verticesVertical[0]);
             const labelHorizontal1 = createTextLabel(object.name + '1', verticesHorizontal[0]);
+
             group2d.add(labelVertical1);
             group2d.add(labelHorizontal1);
             break;
+
         case "LineSegment":
-            const lineSegmentVertical = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesVertical),
-                new THREE.LineBasicMaterial( {color: 'black'} )
-            );
-            const lineSegmentHorizontal = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesHorizontal),
-                new THREE.LineBasicMaterial( {color: 'black'} )
-            );
+            const lineSegmentVertical = createBasicLineSegments(verticesVertical, LINECOLOR);
+            const lineSegmentHorizontal = createBasicLineSegments(verticesHorizontal, LINECOLOR);
 
             group2d.add(lineSegmentVertical);
             group2d.add(lineSegmentHorizontal);
             break;
+
         case "Point":
             verticesVertical[1] = new THREE.Vector3(verticesVertical[0].x, 0, 0);
             verticesHorizontal[1] = new THREE.Vector3(verticesHorizontal[0].x, 0, 0);
     
-            const pointLineVertical = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesVertical),
-                new THREE.LineBasicMaterial( {color: 'gray'} )
-            );
-            const pointLineHorizontal = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints(verticesHorizontal),
-                new THREE.LineBasicMaterial( {color: 'gray'} )
-            );
+            const pointLineVertical = createBasicLineSegments(verticesVertical, 'gray');
+            const pointLineHorizontal = createBasicLineSegments(verticesHorizontal, 'gray');
+
             group2d.add(pointLineVertical);
             group2d.add(pointLineHorizontal);
     
@@ -130,28 +121,29 @@ export function draw2dPlane ( object ) {
             const horizontalOffset = 0.06;
     
             // Adicionar linhas perpendiculares para a linha vertical
-            const perpLineVertical1 = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints([
-                    new THREE.Vector3(verticesVertical[0].x - perpendicularOffset, verticesVertical[0].y - horizontalOffset, verticesVertical[0].z),
-                    new THREE.Vector3(verticesVertical[0].x + perpendicularOffset, verticesVertical[0].y + horizontalOffset, verticesVertical[0].z)
-                ]),
-                new THREE.LineBasicMaterial({ color: 'black' })
-            );
+            const perpLineVerticalArray = [
+                new THREE.Vector3(verticesVertical[0].x - perpendicularOffset, verticesVertical[0].y - horizontalOffset, verticesVertical[0].z),
+                new THREE.Vector3(verticesVertical[0].x + perpendicularOffset, verticesVertical[0].y + horizontalOffset, verticesVertical[0].z)
+            ];
+
+            const perpLineVertical1 = createBasicLineSegments( perpLineVerticalArray, LINECOLOR);
+
             group2d.add(perpLineVertical1);
     
             // Adicionar linhas perpendiculares para a linha horizontal
-            const perpLineHorizontal1 = new THREE.LineSegments(
-                new THREE.BufferGeometry().setFromPoints([
-                    new THREE.Vector3(verticesHorizontal[0].x - perpendicularOffset, verticesHorizontal[0].y - horizontalOffset, verticesHorizontal[0].z),
-                    new THREE.Vector3(verticesHorizontal[0].x + perpendicularOffset, verticesHorizontal[0].y + horizontalOffset, verticesHorizontal[0].z)
-                ]),
-                new THREE.LineBasicMaterial({ color: 'black' })
-            );
+            const perpLineHorizontalArray = [
+                new THREE.Vector3(verticesHorizontal[0].x - perpendicularOffset, verticesHorizontal[0].y - horizontalOffset, verticesHorizontal[0].z),
+                new THREE.Vector3(verticesHorizontal[0].x + perpendicularOffset, verticesHorizontal[0].y + horizontalOffset, verticesHorizontal[0].z)
+            ];
+
+            const perpLineHorizontal1 = createBasicLineSegments( perpLineHorizontalArray, LINECOLOR);
+
             group2d.add(perpLineHorizontal1);
     
             // Adicionar texto para pontos
             const pointLabelVertical = createTextLabel(object.name + '2', verticesVertical[0]);
             const pointLabelHorizontal = createTextLabel(object.name + '1', verticesHorizontal[0]);
+
             group2d.add(pointLabelVertical);
             group2d.add(pointLabelHorizontal);
             break;
@@ -163,10 +155,13 @@ export function draw2dPlane ( object ) {
             const line2HorizontalPoint = intersection(object.geoChild[1], horizontalPlane);
             const line2VerticalPoint = intersection(object.geoChild[1], verticalPlane);
 
-            
+            let planeHorizontalLine, planeVerticalLine;
+
+            let xIntersectionPoint;
 
             // Use points to draw Plane projections
             if (line1HorizontalPoint != null && line2HorizontalPoint != null) {
+
                 const line1HorizontalPoint2d = line1HorizontalPoint.clone();
                 line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;
                 line1HorizontalPoint2d.z = 0;
@@ -175,9 +170,7 @@ export function draw2dPlane ( object ) {
                 line2HorizontalPoint2d.y = 0 - line2HorizontalPoint2d.z;
                 line2HorizontalPoint2d.z = 0;
 
-                const pHorizontalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1HorizontalPoint2d, line2HorizontalPoint2d));
-                const lineMaterialHorizontal = new THREE.LineBasicMaterial( {color: 'black'} );
-                const planeHorizontalLine = new THREE.LineSegments(pHorizontalLine, lineMaterialHorizontal);
+                planeHorizontalLine = createBasicLineSegments( findMaxPoints(line1HorizontalPoint2d, line2HorizontalPoint2d), LINECOLOR);
 
                 group2d.add(planeHorizontalLine);
 
@@ -187,9 +180,8 @@ export function draw2dPlane ( object ) {
             }
 
             if (line1VerticalPoint != null && line2VerticalPoint != null) {
-                const pVerticalLine = new THREE.BufferGeometry().setFromPoints(findMaxPoints(line1VerticalPoint, line2VerticalPoint));
-                const lineMaterialVertical = new THREE.LineBasicMaterial( {color: 'black'} );
-                const planeVerticalLine = new THREE.LineSegments(pVerticalLine, lineMaterialVertical);
+
+                planeVerticalLine = createBasicLineSegments( findMaxPoints(line1VerticalPoint, line2VerticalPoint), LINECOLOR);
 
                 group2d.add(planeVerticalLine);
 
@@ -197,7 +189,64 @@ export function draw2dPlane ( object ) {
             
                 group2d.add(planeLabelVertical);
             }
-            break;
+
+            // Test to see if both lines were created
+            if (planeHorizontalLine != undefined || planeVerticalLine != undefined) {
+                if (planeHorizontalLine == undefined) {
+                    if (line1HorizontalPoint != null){
+                        xIntersectionPoint = intersection(planeVerticalLine, horizontalPlane);
+
+                        const line1HorizontalPoint2d = line1HorizontalPoint.clone();
+                        line1HorizontalPoint2d.y = 0 - line1HorizontalPoint2d.z;
+                        line1HorizontalPoint2d.z = 0;
+
+                        planeHorizontalLine = createBasicLineSegments(findMaxPoints(line1HorizontalPoint2d, xIntersectionPoint), LINECOLOR);
+
+                        group2d.add(planeHorizontalLine);
+
+                        const planeLabelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
+
+                        group2d.add(planeLabelHorizontal);
+                    } else {
+                        xIntersectionPoint = intersection(planeVerticalLine, horizontalPlane);
+
+                        const line2HorizontalPoint2d = line2HorizontalPoint.clone();
+                        line2HorizontalPoint2d.y = 0 - line2HorizontalPoint2d.z;
+                        line2HorizontalPoint2d.z = 0;
+
+                        planeHorizontalLine = createBasicLineSegments(findMaxPoints(line2HorizontalPoint2d, xIntersectionPoint), LINECOLOR);
+
+                        group2d.add(planeHorizontalLine);
+
+                        const planeLabelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
+
+                        group2d.add(planeLabelHorizontal);
+                    }
+                } else {
+                    if (line1VerticalPoint != null) {
+                        xIntersectionPoint = intersection(planeHorizontalLine, horizontalPlane);
+
+                        planeVerticalLine = createBasicLineSegments(findMaxPoints(line1VerticalPoint, xIntersectionPoint), LINECOLOR);
+
+                        group2d.add(planeVerticalLine);
+
+                        const planeLabelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
+                    
+                        group2d.add(planeLabelVertical);
+                    } else {
+                        xIntersectionPoint = intersection(planeHorizontalLine, horizontalPlane);
+
+                        planeVerticalLine = createBasicLineSegments(findMaxPoints(line2VerticalPoint, xIntersectionPoint), LINECOLOR);
+
+                        group2d.add(planeVerticalLine);
+
+                        const planeLabelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
+                    
+                        group2d.add(planeLabelVertical);
+                    }
+                }
+            }
+        break;
 
         case "Shape":
             break;
@@ -211,4 +260,18 @@ export function draw2dPlane ( object ) {
     scene2d.add(group2d);
 
     return group2d;
+}
+
+/**
+ * Creates a basic line segments object with a basic color
+ * @param {Array} points 
+ * @param {string} lineColor 
+ * @returns THREE.LineSegments
+ */
+function createBasicLineSegments( points, lineColor ) {
+    const line = new THREE.BufferGeometry().setFromPoints( points );
+    const color = new THREE.LineBasicMaterial( {color: lineColor} );
+    const lineMesh = new THREE.LineSegments( line, color );
+
+    return lineMesh;
 }

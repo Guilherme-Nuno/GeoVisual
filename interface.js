@@ -478,6 +478,8 @@ export function newLine(){
         default:
         break;
     }
+
+    // Creating object for save file
     switch (menuLine) {
         case 'points':
             command = {
@@ -523,6 +525,9 @@ export function newPlane() {
     const object1Original = findObjectByName(object1PlaneName.value);
     const object2Original = findObjectByName(object2PlaneName.value);
     const object3Original = findObjectByName(object3PlaneName.value);
+
+    const anglePHP = +planeAnglePHP.value;
+    const anglePFP = +planeAnglePFP.value;
 
     let object1, object2, object3, objectTemp1, objectTemp2;
 
@@ -594,9 +599,41 @@ export function newPlane() {
         case 'ramp':
             break;
         case 'top':
+            if (object1Type == 'point') {
+                objectTemp1 = createPoint(
+                    object1.position.x + 2,
+                    object1.position.y + findDeviationFromAngle( 2, anglePHP),
+                    object1.position.z, '', false
+                );
+                objectTemp2 = createPoint(
+                    object1.position.x + 1,
+                    object1.position.y + findDeviationFromAngle( 1, anglePHP),
+                    object1.position.z + 2, '', false
+                );
+                createPlane(object1, objectTemp1, objectTemp2);
+            }
             break;
         case 'vertical':
+            if (object1Type == 'point') {
+                objectTemp1 = createPoint(
+                    object1.position.x + 2,
+                    object1.position.y,
+                    object1.position.z + findDeviationFromAngle( 2, anglePFP), '', false
+                );
+                objectTemp2 = createPoint(
+                    object1.position.x + 1,
+                    object1.position.y + 2,
+                    object1.position.z + findDeviationFromAngle( 1, anglePFP), '', false
+                );
+                createPlane(object1, objectTemp1, objectTemp2);
+            }
             break;
+        case 'points':
+            object1 = object1Original;
+            object2 = object2Original;
+            object3 = object3Original;
+            createPlane(object1, object2, object3);
+        break;
         default:
             break;
     }
