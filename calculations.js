@@ -47,7 +47,11 @@ export function rotateToPlane(shape, plane){
 
     return shape;
 }
-
+/**
+ * 
+ * @param {THREE.LineSegments} shape 
+ * @returns {THREE.Vector3[]}
+ */
 export function findVertices( shape ){
     const shapeVertices = []; 
 

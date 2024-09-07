@@ -29,9 +29,13 @@ export function draw3dPlane (object){
             break;
         case "Shape":
             for (let i = 0; i < object.geoVertices.length; i++) {
+                // This will create points on the 2d Plane
                 group3d.add(createPoint(object.geoVertices[i].x, object.geoVertices[i].y, object.geoVertices[i].z));
             }
-            
+            const shape = object.clone();
+
+            group3d.add(shape);
+
             for (let i = 0; i < object.geoVertices.length - 1; i++) {
                 group3d.add(createLineSegment(object.geoVertices[i], object.geoVertices[i + 1]));
 
@@ -67,8 +71,14 @@ export function draw2dPlane ( object ) {
             verticesHorizontal[index] = new THREE.Vector3().fromBufferAttribute(object.geometry.attributes.position, index);
         }
 
-    } else {
+    } else if (object.geoType == 'Shape') {
         
+        for (let index = 0; index < object.geoVertices.length; index++) {
+            verticesVertical[index] = object.geoVertices[index].clone();
+            verticesHorizontal[index] = object.geoVertices[index].clone();
+        }
+
+    } else {  
         verticesVertical[0] = object.position.clone();
         verticesHorizontal[0] = object.position.clone();
     }
@@ -249,6 +259,23 @@ export function draw2dPlane ( object ) {
         break;
 
         case "Shape":
+
+            for (let i = 0; i < verticesVertical.length - 1; i++) {
+                group2d.add(createLineSegment(verticesVertical[i], verticesVertical[i + 1]));
+    
+                if (i == verticesVertical.length - 2) {
+                    group2d.add(createLineSegment(verticesVertical[i + 1], verticesVertical[0]));
+                }
+            }
+
+            for (let i = 0; i < verticesHorizontal.length - 1; i++) {
+                group2d.add(createLineSegment(verticesHorizontal[i], verticesHorizontal[i + 1]));
+    
+                if (i == verticesHorizontal.length - 2) {
+                    group2d.add(createLineSegment(verticesHorizontal[i + 1], verticesHorizontal[0]));
+                }
+            }
+
             break;
     
         default:

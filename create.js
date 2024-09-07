@@ -255,6 +255,14 @@ function createShapeGeometry( sideSize, sides, length ) {
     }
 }
 
+/**
+ * Creates a Shape made of line segments with a defined number of sides and size.
+ * @param {number} sideSize 
+ * @param {number} sides 
+ * @param {THREE.Vector3} position 
+ * @param {THREE.Plane} plane 
+ * @returns {THREE.LineSegments}
+ */
 export function createShape( sideSize, sides, position, plane ) {
     
     const shapeGeometry = createShapeGeometry( sideSize, sides );
@@ -269,8 +277,8 @@ export function createShape( sideSize, sides, position, plane ) {
     shape.geoVertices = findVertices( shape );
     shape.geoType = 'Shape';
 
-    draw3dPlane(shape);
-    draw2dPlane(shape);
+    //draw3dPlane(shape);
+    //draw2dPlane(shape);
 
     scene3d.add(shape);
 
@@ -285,9 +293,6 @@ export function createLineSegment( point1, point2 ){
     const lineSegment = new THREE.LineSegments(lineSegmentGeometry, new THREE.LineBasicMaterial( {color: 'black' } ) );
 
     lineSegment.geoType = 'LineSegment';
-
-    draw3dPlane(lineSegment);
-    draw2dPlane(lineSegment);
 
     return lineSegment;
 }
