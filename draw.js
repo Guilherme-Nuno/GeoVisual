@@ -207,7 +207,7 @@ export function draw2dPlane ( object ) {
                         const planeLabelHorizontal = createTextLabel('h' + object.name, new THREE.Vector3().fromBufferAttribute(planeHorizontalLine.geometry.attributes.position, 0));
 
                         group2d.add(planeLabelHorizontal);
-                    } else {
+                    } else  if (line2HorizontalPoint != null) {
                         xIntersectionPoint = intersection(planeVerticalLine, horizontalPlane);
 
                         const line2HorizontalPoint2d = line2HorizontalPoint.clone();
@@ -233,7 +233,7 @@ export function draw2dPlane ( object ) {
                         const planeLabelVertical = createTextLabel('f' + object.name, new THREE.Vector3().fromBufferAttribute(planeVerticalLine.geometry.attributes.position, 0));
                     
                         group2d.add(planeLabelVertical);
-                    } else {
+                    } else if (line2VerticalPoint != null) {
                         xIntersectionPoint = intersection(planeHorizontalLine, horizontalPlane);
 
                         planeVerticalLine = createBasicLineSegments(findMaxPoints(line2VerticalPoint, xIntersectionPoint), LINECOLOR);
