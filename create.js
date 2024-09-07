@@ -277,11 +277,6 @@ export function createShape( sideSize, sides, position, plane ) {
     shape.geoVertices = findVertices( shape );
     shape.geoType = 'Shape';
 
-    //draw3dPlane(shape);
-    //draw2dPlane(shape);
-
-    scene3d.add(shape);
-
     return shape;
 }
 

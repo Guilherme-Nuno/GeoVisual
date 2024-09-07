@@ -35,14 +35,6 @@ export function draw3dPlane (object){
             const shape = object.clone();
 
             group3d.add(shape);
-
-            for (let i = 0; i < object.geoVertices.length - 1; i++) {
-                group3d.add(createLineSegment(object.geoVertices[i], object.geoVertices[i + 1]));
-
-                if (i == object.geoVertices.length - 2) {
-                    group3d.add(createLineSegment(object.geoVertices[i + 1], object.geoVertices[0]));
-                }
-            }
             break;
         default:
             break;
