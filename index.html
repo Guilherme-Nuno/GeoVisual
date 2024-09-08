@@ -18,6 +18,9 @@
     window.showExistingLineList = BUTTON.showExistingLineList;
     window.selectMenuFile = BUTTON.selectMenuFile;
     window.newPlane = BUTTON.newPlane;
+    window.showExistingPlaneList = BUTTON.showExistingPlaneList;
+    window.newShape = BUTTON.newShape;
+    window.selectMenu2D = BUTTON.selectMenu2D;
 
     import { save, load } from "./main.js";
     window.save = save;
@@ -250,12 +253,29 @@
             </div>
 
             <div class="controls_2D" id="controls_2D">
-                <button class="botoes_controlos">Triangulo</button>
-                <button class="botoes_controlos">Rectangulo</button>
-                <button class="botoes_controlos">Pentagono</button>
-                <button class="botoes_controlos">Hexagono</button>
-                <button class="botoes_controlos">Octagono</button>
+                <button class="botoes_controlos" id="button2DTriangle" onclick="selectMenu2D('triangle')">Triangulo</button>
+                <button class="botoes_controlos" id="button2DRectangle" onclick="selectMenu2D('rectangle')">Rectangulo</button>
+                <button class="botoes_controlos" id="button2DPentagon" onclick="selectMenu2D('pentagon')">Pentagono</button>
+                <button class="botoes_controlos" id="button2DHexagon" onclick="selectMenu2D('hexagon')">Hexagono</button>
+                <button class="botoes_controlos" id="button2DOctagon" onclick="selectMenu2D('octagon')">Octagono</button>
             </div>
+            <div class="controls2DMenu" id="controls2DMenu">
+                <span class="2DPoint" id="menu2DPoint">
+                    Centro ponto:
+                    <select id="menu2DPointName" class="input-coord" placeholder="Nome" onfocus="showExistingPointList('menu2DPointName')"></select>
+                </span>
+                <span class="2DPlane" id="menu2DPlane">
+                    Plano:
+                    <select id="menu2DPlaneName" class="input-coord" placeholder="Nome" onfocus="showExistingPlaneList('menu2DPlaneName')"></select>
+                </span>
+                <span class="2DSize" id="menu2DSize">
+                    Tamanho do lado:
+                    <input type="number" id="2DSize" class="input-coord" placeholder="Tamanho">
+                </span>
+
+                <button class="botoes_controlos" onclick="newShape()">CRIAR</button>
+            </div>
+            
 
             <div class="controls_3D" id="controls_3D">
                 <button class="botoes_controlos">Triangulo</button>

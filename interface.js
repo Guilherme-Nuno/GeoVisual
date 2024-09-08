@@ -1,5 +1,5 @@
 import { viewHeigth, viewWidth, findObjectByName, b13, b24, linesB13, linesB24, horizontalPlane, verticalPlane, clearAllScenes } from "./main.js";
-import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList } from "./create.js";
+import { createPoint, pointNamesList, existingPointList, createLine, createPlane, existingLineList, existingPlaneList, createShape } from "./create.js";
 import { findDeviationFromAngle, intersection } from "./calculations.js";
 import { addSaveStack } from "./fileUtils.js";
 
@@ -27,6 +27,7 @@ let menuFile = 'none';
 let menuLine = 'none';
 let menuPlane = 'none';
 let menuPoint = 0;
+let menu2D = 'none';
 
 // First menu
 const buttonFile = document.getElementById("buttonFile");
@@ -126,6 +127,15 @@ const planePfpSelect = document.getElementById("planePfpSelect");
 
 const controlsPlanePoints = document.getElementById("controlsPlanePoints");
 
+// Shape menu
+const button2DTriangle = document.getElementById("button2DTriangle");
+const button2DRectangle = document.getElementById("button2DRectangle");
+const button2DPentagon = document.getElementById("button2DPentagon");
+const button2DHexagon = document.getElementById("button2DHexagon");
+const button2DOctagon = document.getElementById("button2DOctagon");
+
+const controls2DMenu = document.getElementById("controls2DMenu");
+
 export function showBisectorPlanes(){
     switch (showBisector) {
         case false:
@@ -200,6 +210,26 @@ export function showExistingLineList(elementId){
     selectElement.appendChild(placeholderOption);
 
     existingLineList.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        selectElement.appendChild(option);
+    });
+}
+
+export function showExistingPlaneList(elementId) {
+    const selectElement = document.getElementById(elementId);
+
+    while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Plano';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectElement.appendChild(placeholderOption);
+
+    existingPlaneList.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
         option.textContent = name;
@@ -331,6 +361,7 @@ export function newLine(){
     const phpAngle = +anglePHP.value;
     const pfpAngle = +anglePFP.value;
     let rigthOpening, rigthOpeningPHP, rigthOpeningPFP;
+    let lineCreated;
 
     if (angleSelect.value == 'rigth') {
         rigthOpening = true;
@@ -365,7 +396,7 @@ export function newLine(){
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
 
-            createLine(point1, pointTemp);
+            lineCreated = createLine(point1, pointTemp);
         break;
 
         case 'frontal':
@@ -380,7 +411,7 @@ export function newLine(){
 
             pointTemp = createPoint(newX, newY, newZ, "", false);
 
-            createLine(point1, pointTemp);
+            lineCreated = createLine(point1, pointTemp);
         break;
 
         case 'frontalHorizontal':
@@ -388,7 +419,7 @@ export function newLine(){
 
             pointTemp = createPoint(newX, point1.position.y, point1.position.z, "", false);
 
-            createLine( point1, pointTemp);
+            lineCreated = createLine( point1, pointTemp);
         break;
 
         case 'top':
@@ -396,7 +427,7 @@ export function newLine(){
 
             pointTemp = createPoint(point1.position.x, point1.position.y, newZ, "", false);
 
-            createLine( point1, pointTemp);
+            lineCreated = createLine( point1, pointTemp);
         break;
         
         case 'vertical':
@@ -404,7 +435,7 @@ export function newLine(){
 
             pointTemp = createPoint(point1.position.x, newY, point1.position.z, "", false);
 
-            createLine( point1, pointTemp);
+            lineCreated = createLine( point1, pointTemp);
         break;
 
         case 'pass':
@@ -423,7 +454,7 @@ export function newLine(){
             }
 
                 pointTemp = createPoint(newX, 0, 0, '', false);
-                createLine( point1, pointTemp);
+                lineCreated = createLine( point1, pointTemp);
         break;
 
         case 'oblique':
@@ -450,7 +481,7 @@ export function newLine(){
 
         case 'perfil':
             if (point1Name.value != '' && point2Name.value != '') {
-                createLine(point1, point2);
+                lineCreated = createLine(point1, point2);
             } else {
                 if (rigthOpeningPHP) {
                     newY = point1.position.y + findDeviationFromAngle( 2, phpAngle);
@@ -466,13 +497,13 @@ export function newLine(){
                 newX = point1.position.x;
 
                 pointTemp = createPoint(newX, newY, newZ, '', false);
-                createLine( point1, pointTemp);
+                lineCreated = createLine( point1, pointTemp);
             }
         break;
 
         case 'points':
             if (point1 != point2) {
-                createLine( point1, point2);
+                lineCreated = createLine( point1, point2);
             }
         break;
         default:
@@ -482,33 +513,37 @@ export function newLine(){
     // Creating object for save file
     switch (menuLine) {
         case 'points':
-            command = {
-                action: 'create',
-                type: 'line',
-                parameters:{
-                    point1: {
-                        name: point1.name
-                    },
-                    point2: {
-                        name: point2.name
+            if (lineCreated != null) {
+                command = {
+                    action: 'create',
+                    type: 'line',
+                    parameters:{
+                        point1: {
+                            name: point1.name
+                        },
+                        point2: {
+                            name: point2.name
+                        }
                     }
                 }
             }
             addSaveStack(command);
         break;
         default:
-            let command = {
-                action: 'create',
-                type: 'line',
-                parameters:{
-                    point1: {
-                        name: point1.name
-                    },
-                    point2: {
-                        name: '',
-                        x: pointTemp.position.x,
-                        y: pointTemp.position.y,
-                        z: pointTemp.position.z,
+            if (lineCreated != null && pointTemp != null) {
+                let command = {
+                    action: 'create',
+                    type: 'line',
+                    parameters:{
+                        point1: {
+                            name: point1.name
+                        },
+                        point2: {
+                            name: '',
+                            x: pointTemp.position.x,
+                            y: pointTemp.position.y,
+                            z: pointTemp.position.z,
+                        }
                     }
                 }
             }
@@ -663,6 +698,33 @@ export function newIntersection( select ) {
         break;
         default:
             // Fazer para intersecções de objectos no geral.
+            break;
+    }
+}
+
+export function newShape() {
+
+    const center = findObjectByName(document.getElementById("menu2DPointName").value);
+    const plane = findObjectByName(document.getElementById("menu2DPlaneName").value);
+    const size = +document.getElementById('2DSize').value;
+
+    switch (menu2D) {
+        case 'triangle':
+            createShape(size, 3, center.position, plane);
+            break;
+        case 'rectangle':
+            createShape(size, 4, center.position, plane);
+            break;
+        case 'pentagon':
+            createShape(size, 5, center.position, plane);
+            break;
+        case 'hexagon':
+            createShape(size, 6, center.position, plane);
+            break;
+        case 'octagon':
+            createShape(size, 8, center.position, plane);
+            break;
+        default:
             break;
     }
 }
@@ -952,6 +1014,45 @@ export function selectMenuPlane( select ) {
     }
 }
 
+export function selectMenu2D(select) {
+    if (menu2D == 'none' || menu2D != select) {
+        clearMenu2D();
+
+        switch (select) {
+            case 'triangle':
+                button2DTriangle.style.backgroundColor = BUTTONSELECTCOLOR;
+                controls2DMenu.style.display = 'inline';
+                menu2D = select;
+            break;
+            case 'rectangle':
+                button2DRectangle.style.backgroundColor = BUTTONSELECTCOLOR;
+                controls2DMenu.style.display = 'inline';
+                menu2D = select;
+            break;
+            case 'pentagon':
+                button2DPentagon.style.backgroundColor = BUTTONSELECTCOLOR;
+                controls2DMenu.style.display = 'inline';
+                menu2D = select;
+            break;
+            case 'hexagon':
+                button2DHexagon.style.backgroundColor = BUTTONSELECTCOLOR;
+                controls2DMenu.style.display = 'inline';
+                menu2D = select;
+            break;
+            case 'octagon':
+                button2DOctagon.style.backgroundColor = BUTTONSELECTCOLOR;
+                controls2DMenu.style.display = 'inline';
+                menu2D = select;
+            break;
+            default:
+            break;
+        }
+    } else {
+        clearMenu2D();
+        menu2D = 'none';
+    }
+}
+
 function clearMenu(){
     buttonFile.style.backgroundColor = '';
     buttonPoint.style.backgroundColor = '';
@@ -973,11 +1074,13 @@ function clearMenu(){
     clearMenuPlane();
     clearMenuPoint();
     clearMenuFile();
+    clearMenu2D();
 
-    menuLine = 0;
-    menuPlane = 0;
+    menuLine = 'none';
+    menuPlane = 'none';
     menuPoint = 0;
     menuFile = 'none';
+    menu2D = 'none';
 }
 
 function clearMenuFile() {
@@ -1038,6 +1141,16 @@ function clearMenuPlane() {
     object3Plane.style.display = 'none';
     spanPlaneAnglePHP.style.display = 'none';
     spanPlaneAnglePFP.style.display = 'none';
+}
+
+function clearMenu2D(){
+    button2DTriangle.style.backgroundColor = '';
+    button2DRectangle.style.backgroundColor = '';
+    button2DPentagon.style.backgroundColor = '';
+    button2DHexagon.style.backgroundColor = '';
+    button2DOctagon.style.backgroundColor = '';
+
+    controls2DMenu.style.display = 'none';
 }
 
 function updateOnFocusObject(select, input) {

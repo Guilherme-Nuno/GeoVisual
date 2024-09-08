@@ -45,6 +45,10 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     const pointMaterial = new THREE.MeshBasicMaterial( {color: 'black'} );
     const point = new THREE.Mesh(pointGeometry, pointMaterial);
 
+    if (pointName == undefined) {
+        pointName = '';
+    }
+
     if (draw) {
         const indexName = pointNamesList.findIndex(name => name === pointName);
         if (indexName != -1) {
@@ -276,6 +280,9 @@ export function createShape( sideSize, sides, position, plane ) {
 
     shape.geoVertices = findVertices( shape );
     shape.geoType = 'Shape';
+
+    draw3dPlane(shape);
+    draw2dPlane(shape);
 
     return shape;
 }

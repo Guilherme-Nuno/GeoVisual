@@ -25,6 +25,9 @@ export function draw3dPlane (object){
             break;
         case "Plane":
             const plane = object.clone();
+            plane.geoType = "Plane";
+            plane.geoChild = object.geoChild;
+            plane.geoQuaternion = object.geoQuaternion;
             group3d.add(plane);
             break;
         case "Shape":

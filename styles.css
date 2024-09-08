@@ -99,6 +99,6 @@ html, body {
   background-color: gray;
 }
 
-.controlsPlaneMenu, .controlsFile, .controls_point, .controls_line, .controls_plane, .controls_2D, .controls_3D, .controls_faq {
+.controls2DMenu, .controlsPlaneMenu, .controlsFile, .controls_point, .controls_line, .controls_plane, .controls_2D, .controls_3D, .controls_faq {
   display: none;
 }
