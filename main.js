@@ -1,11 +1,13 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.124.0/examples/jsm/controls/OrbitControls.js';
-import { saveScene, downloadJSON, readJSONFile, loadObject, clearSaveStack } from './fileUtils.js';
-import { createNamesLists } from './create.js';
+import { clearSaveStack } from './utils/fileUtils.js';
+import { createNamesLists } from './utils/nameLists.js';
 
 
 // Global Variables
 const PROJECTIONPLANECOLORS = '#FBFBFB';
+export const LINECOLOR = 'black';
+export const BUTTONSELECTCOLOR = 'gray';
 
 let vistas3D = document.getElementById("vista-3D");
 export const viewWidth = vistas3D.clientWidth;
@@ -200,11 +202,6 @@ export function findObjectByName( name ){
     return scene3d.getObjectByName( name );
 }
 
-export function save(){
-    const jsonData = saveScene( scene2d, scene3d);
-    downloadJSON( jsonData, 'scene.gvis');
-}
-
 function clearScene(scene) {
     while (scene.children.length > 0) {
         const object = scene.children[0];
@@ -217,20 +214,4 @@ export function clearAllScenes() {
     clearScene(scene3d);
     clearSaveStack();
     createInitialScenes();
-}
-
-export function load(){
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-
-    if (!file) {
-        alert("Por favor, selecione um arquivo primeiro.");
-        return;
-    }
-
-    readJSONFile(file, (loadedScene) => {
-        clearAllScenes();
-
-        loadedScene.forEach(loadObject);
-    });
 }

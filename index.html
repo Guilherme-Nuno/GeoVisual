@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 
 <script type="module">
-    import * as BUTTON from "./interface.js";
+    import * as BUTTON from "../menu/interface.js";
 
     window.expandirJanela = BUTTON.expandirJanela;
-    window.selectMenu = BUTTON.selectMenu;
-    window.newPoint = BUTTON.newPoint;
-    window.selectMenuLine = BUTTON.selectMenuLine;
     window.showPointNameList = BUTTON.showPointNameList;
     window.showExistingPointList = BUTTON.showExistingPointList;
-    window.newLine = BUTTON.newLine;
-    window.selectMenuPlane = BUTTON.selectMenuPlane;
-    window.newPlane = BUTTON.newPlane;
-    window.selectMenuPoint = BUTTON.selectMenuPoint;
     window.showBisectorPlanes = BUTTON.showBisectorPlanes;
-    window.newIntersection = BUTTON.newIntersection;
     window.showExistingLineList = BUTTON.showExistingLineList;
-    window.selectMenuFile = BUTTON.selectMenuFile;
-    window.newPlane = BUTTON.newPlane;
     window.showExistingPlaneList = BUTTON.showExistingPlaneList;
-    window.newShape = BUTTON.newShape;
-    window.selectMenu2D = BUTTON.selectMenu2D;
 
-    import { save, load } from "./main.js";
+    import { save, load } from "./utils/fileUtils.js";
     window.save = save;
     window.load = load;
+
+    import { selectMenu } from './menu/mainmenu.js';
+    window.selectMenu = selectMenu;
+
+    import { selectMenuFile } from './menu/utilsmenu.js';
+    window.selectMenuFile = selectMenuFile;
+
+    import { selectMenuPoint, newPoint, newIntersection } from './menu/pointMenu.js';
+    window.selectMenuPoint = selectMenuPoint;
+    window.newPoint = newPoint;
+    window.newIntersection = newIntersection;
+
+    import {selectMenuLine, newLine } from './menu/lineMenu.js';
+    window.selectMenuLine = selectMenuLine;
+    window.newLine = newLine;
+
+    import {selectMenuPlane, newPlane } from './menu/planeMenu.js';
+    window.selectMenuPlane = selectMenuPlane;
+    window.newPlane = newPlane;
+
+    import { selectMenu2D, newShape } from './menu/2DMenu.js';
+    window.selectMenu2D = selectMenu2D;
+    window.newShape = newShape;
 </script>
 
 <script type="module" src="main.js"></script>

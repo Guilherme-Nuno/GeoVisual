@@ -1,6 +1,7 @@
-import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { createLine, createPoint } from './create.js';
-import { findObjectByName } from './main.js';
+import { createLine } from '../create/line.js';
+import { createPoint } from '../create/point.js';
+import { findObjectByName } from '../main.js';
+import { clearAllScenes } from '../main.js';
 
 const saveStack = [];
 
@@ -10,13 +11,13 @@ export function addSaveStack( command ) {
     console.log(saveStack);
 }
 
-export function saveScene() {
+function saveScene() {
     
     const jsonData = JSON.stringify(saveStack);
     return jsonData;
 }
 
-export function downloadJSON(jsonData, filename) {
+function downloadJSON(jsonData, filename) {
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -33,7 +34,7 @@ function loadScene(jsonData) {
     return sceneData;
 }
 
-export function readJSONFile(file, callback) {
+function readJSONFile(file, callback) {
     const reader = new FileReader();
     reader.onload = function(event) {
         const fileContent = event.target.result;
@@ -45,7 +46,7 @@ export function readJSONFile(file, callback) {
     reader.readAsText(file);
 }
 
-export function loadObject( object ) {
+function loadObject( object ) {
 
     let point1, point2;
 
@@ -80,4 +81,25 @@ export function loadObject( object ) {
 
 export function clearSaveStack() {
     saveStack.length = 0;
+}
+
+export function load(){
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Por favor, selecione um arquivo primeiro.");
+        return;
+    }
+
+    readJSONFile(file, (loadedScene) => {
+        clearAllScenes();
+
+        loadedScene.forEach(loadObject);
+    });
+}
+
+export function save(){
+    const jsonData = saveScene( scene2d, scene3d);
+    downloadJSON( jsonData, 'scene.gvis');
 }
