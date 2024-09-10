@@ -247,20 +247,20 @@ export const button2DOctagon = document.getElementById("button2DOctagon");
 export const controls2DMenu = document.getElementById("controls2DMenu");
 
 export function showBisectorPlanes(){
-    switch (showBisector) {
+    switch (menu.showBisector) {
         case false:
             b13.material.visible = true;
             b24.material.visible = true;
             linesB13.material.visible = true;
             linesB24.material.visible = true;
-            showBisector = true;
+            menu.showBisector = true;
         break;
         case true:
             b13.material.visible = false;
             b24.material.visible = false;
             linesB13.material.visible = false;
             linesB24.material.visible = false;
-            showBisector = false;
+            menu.showBisector = false;
         break;
         default:
             break;

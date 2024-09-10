@@ -3,13 +3,13 @@ import {
     buttonPointNew, controlsPointNew,
     buttonPointIntersection, controlsPointIntersection,
     buttonPointNotable, controlsPointNotable,
- } from './interface.js';
- import { createPoint } from '../create/point.js';
- import { addSaveStack } from '../utils/fileUtils.js';
- import { intersection } from '../utils/calculations.js';
- import { BUTTONSELECTCOLOR } from '../main.js';
+} from './interface.js';
+import { createPoint } from '../create/point.js';
+import { addSaveStack } from '../utils/fileUtils.js';
+import { intersection } from '../utils/calculations.js';
+import { BUTTONSELECTCOLOR, findObjectByName, horizontalPlane, verticalPlane, b13, b24 } from '../main.js';
 
- export function selectMenuPoint( select ){
+export function selectMenuPoint( select ){
     if (menu.point == 'none' || menu.point != select) {
         
         menu.clearMenuPoint();
@@ -38,7 +38,7 @@ import {
     }
 }
 
- export function newPoint(){
+export function newPoint(){
     const coordX = +document.getElementById('coordX').value;
     const coordY = +document.getElementById('coordY').value;
     const coordZ = +document.getElementById('coordZ').value;

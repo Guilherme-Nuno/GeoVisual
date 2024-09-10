@@ -2,6 +2,7 @@ import { createLine } from '../create/line.js';
 import { createPoint } from '../create/point.js';
 import { findObjectByName } from '../main.js';
 import { clearAllScenes } from '../main.js';
+import { scene2d, scene3d } from '../main.js';
 
 const saveStack = [];
 
