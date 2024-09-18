@@ -20,6 +20,9 @@ export function draw3dPlane (object){
             line.geoType = object.geoType;
             line.geoChild = object.geoChild;
             group3d.add(line);
+
+            const label3Dline = createTextLabel(line.name, new THREE.Vector3().fromBufferAttribute(line.geometry.attributes.position, 0));
+            group3d.add(label3Dline);
             break;
         case "Plane":
             const plane = object.clone();

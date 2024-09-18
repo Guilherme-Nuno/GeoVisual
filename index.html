@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <script type="module">
-    import * as BUTTON from "../menu/interface.js";
+    import * as BUTTON from "./menu/interface.js";
 
     window.expandirJanela = BUTTON.expandirJanela;
     window.showPointNameList = BUTTON.showPointNameList;
@@ -14,7 +14,7 @@
     window.save = save;
     window.load = load;
 
-    import { selectMenu } from './menu/mainmenu.js';
+    import { selectMenu } from './menu/mainMenu.js';
     window.selectMenu = selectMenu;
 
     import { selectMenuFile } from './menu/utilsmenu.js';
@@ -61,12 +61,12 @@
             </div>
         </div>
         <div class="controlos" id="controlos">
-            <button class="botoes_controlos" id="buttonFile" onclick="selectMenu(7)">MENU</button>
+            <button class="botoes_controlos" id="buttonFile" onclick="selectMenu(7)">FICHEIRO</button>
             <button class="botoes_controlos" id="button_point" onclick="selectMenu(1)">PONTO</button>
             <button class="botoes_controlos" id="button_line" onclick="selectMenu(2)">RECTA</button>
             <button class="botoes_controlos" id="button_plane" onclick="selectMenu(3)">PLANO</button>
             <button class="botoes_controlos" id="button_2D" onclick="selectMenu(4)">FIGURAS</button>
-            <button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">SOLIDOS</button>
+            <!--<button class="botoes_controlos" id="button_3D" onclick="selectMenu(5)">SOLIDOS</button>-->
             <button class="botoes_controlos_dir" id="button_faq" onclick="selectMenu(6)">FAQ</button>
 
             <div class="controlsFile" id="controlsFile">
@@ -84,7 +84,7 @@
 
             <div class="controls_point" id="controls_point">
                 <button class="botoes_controlos" id="buttonPointNew" onclick="selectMenuPoint(1)">NOVO</button>
-                <button class="botoes_controlos" id="buttonPointIntersection" onclick="selectMenuPoint(2)">INTERSECÇÃO</button>
+                <!--<button class="botoes_controlos" id="buttonPointIntersection" onclick="selectMenuPoint(2)">INTERSECÇÃO</button>-->
                 <button class="botoes_controlos" id="buttonPointNotable" onclick="selectMenuPoint(3)">PONTOS NOTAVEIS</button>
             
                 <div class="controls_point_new" id="controls_point_new">

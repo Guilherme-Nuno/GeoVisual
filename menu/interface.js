@@ -1,126 +1,9 @@
 import { b13, b24, linesB13, linesB24 } from "../main.js";
 import { existingPointList, existingLineList, existingPlaneList, pointNamesList } from "../utils/nameLists.js";
+import { Menu } from "./classMenu.js";
 
-class Menu {
-    constructor(){
-        this.windowMaximized = false;
-        this.showBisector = false;
-        this.main = 'none';
-        this.file = 'none';
-        this.line = 'none';
-        this.plane = 'none';
-        this.point = 'none';
-        this.m2D = 'none';
-    }
-
-    clearMenu() {
-        buttonFile.style.backgroundColor = '';
-        buttonPoint.style.backgroundColor = '';
-        buttonLine.style.backgroundColor = '';
-        buttonPlane.style.backgroundColor = '';
-        button3D.style.backgroundColor = '';
-        button2D.style.backgroundColor = '';
-        buttonFaq.style.backgroundColor = '';
-
-        controlsFile.style.display = 'none';
-        controlsPoint.style.display = 'none';
-        controlsLine.style.display = 'none';
-        controlsPlane.style.display = 'none';
-        controls2D.style.display = 'none';
-        controls3D.style.display = 'none';
-        controlsFaq.style.display = 'none';
-
-        this.clearMenuLine();
-        this.clearMenuPlane();
-        this.clearMenuPoint();
-        this.clearMenuFile();
-        this.clearMenu2D();
-
-        this.line = 'none';
-        this.plane = 'none';
-        this.point = 'none';
-        this.file = 'none';
-        this.m2D = 'none';
-    }
-
-    clearMenuFile() {
-        buttonFileMenuLoad.style.backgroundColor = '';
-        buttonFileMenuSave.style.backgroundColor = '';
-        
-        controlsFileSave.style.display = 'none';
-        controlsFileLoad.style.display = 'none';
-    }
-
-    clearMenuLine() {
-        buttonFileMenuLoad.style.backgroundColor = '';
-        buttonFileMenuSave.style.backgroundColor = '';
-        
-        controlsFileSave.style.display = 'none';
-        controlsFileLoad.style.display = 'none';
-    }
-
-    clearMenuPoint() {
-        buttonPointNew.style.backgroundColor = '';
-        buttonPointIntersection.style.backgroundColor = '';
-        buttonPointNotable.style.backgroundColor = '';
-    
-        controlsPointNew.style.display = 'none';
-        controlsPointIntersection.style.display = 'none';
-        controlsPointNotable.style.display = 'none';
-    }
-
-    clearMenuLine(){
-        buttonLineLevel.style.backgroundColor = '';
-        buttonLinePoint.style.backgroundColor = '';
-        buttonLineFrontal.style.backgroundColor = '';
-        buttonLineFrontoHorizontal.style.backgroundColor = '';
-        buttonLineTopo.style.backgroundColor = '';
-        buttonLineVertical.style.backgroundColor = '';
-        buttonLinePass.style.backgroundColor = '';
-        buttonLineOblique.style.backgroundColor = '';
-        buttonLinePerfil.style.backgroundColor = '';
-    
-        controlsLinePoint.style.display = 'none';
-    
-        spanPoint1Name.style.display = '';
-        spanPoint2Name.style.display = '';
-        spanAngle.style.display = '';
-        spanAnglePFP.style.display = '';
-        spanAnglePHP.style.display = '';
-    }
-
-    clearMenuPlane() { 
-        buttonPlaneHorizontal.style.backgroundColor = '';
-        buttonPlaneFrontal.style.backgroundColor = '';
-        buttonPlaneOblique.style.backgroundColor = '';
-        buttonPlanePerfil.style.backgroundColor = '';
-        buttonPlaneRamp.style.backgroundColor = '';
-        buttonPlaneTop.style.backgroundColor = '';
-        buttonPlaneVertical.style.backgroundColor = '';
-        buttonPlaneLines.style.backgroundColor = '';
-        buttonPlaneLinePoint.style.backgroundColor = '';
-        buttonPlanePoints.style.backgroundColor = '';
-    
-        controlsPlanePoints.style.display = 'none';
-        controlsPlaneMenu.style.display = 'none';
-    
-        object1Plane.style.display = 'none';
-        object2Plane.style.display = 'none';
-        object3Plane.style.display = 'none';
-        spanPlaneAnglePHP.style.display = 'none';
-        spanPlaneAnglePFP.style.display = 'none';
-    }
-
-    clearMenu2D(){
-        button2DTriangle.style.backgroundColor = '';
-        button2DRectangle.style.backgroundColor = '';
-        button2DPentagon.style.backgroundColor = '';
-        button2DHexagon.style.backgroundColor = '';
-        button2DOctagon.style.backgroundColor = '';
-    
-        controls2DMenu.style.display = 'none';
-    }
-}
+//Construct new menu object
+export const menu = new Menu();
 
 document.addEventListener("DOMContentLoaded", function() {
     // Event Listeners
@@ -135,9 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("object3PlaneType").addEventListener("change", () => {
         updateOnFocusObject('object3PlaneType', 'object3PlaneName')});
 });
-
-//Construct new menu object
-export const menu = new Menu();
 
 // First menu
 export const buttonFile = document.getElementById("buttonFile");

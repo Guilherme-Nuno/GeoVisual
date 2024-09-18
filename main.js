@@ -34,8 +34,8 @@ export let cage;
 
 // Renderers
 
-const renderer3d = new THREE.WebGLRenderer();
-const renderer2d = new THREE.WebGLRenderer();
+const renderer3d = new THREE.WebGLRenderer( {antialias: true} );
+const renderer2d = new THREE.WebGLRenderer( {antialias: true} );
 
 renderer3d.setPixelRatio(window.devicePixelRatio);
 renderer2d.setPixelRatio(window.devicePixelRatio);
@@ -48,9 +48,7 @@ let camera2d, camera3d;
 
 function createInitialScenes() {
 
-    // Create a camera
-    const fov = 50; // AKA Field of View
-    const aspectCamera = container3DView.clientWidth / container3DView.clientHeight;
+    // Create camera parameters
     const cameraWidth = 35;
     const cameraHeight = 35;
     const near = 0.1; // the near clipping plane
@@ -112,36 +110,6 @@ function createInitialScenes() {
     const earthLine = new THREE.LineSegments(geometryEarthLine, new THREE.LineBasicMaterial( {color: 'DarkGray'}));
     const earthLine2d = earthLine.clone();
 
-    // Create example object
-
-    // const tempPoint1 = createPoint(4, 5, 5, "R");
-    // const tempPoint2 = createPoint(1, 1, 7, "S");
-    // const tempPoint3 = createPoint(-3, -2, 3, "T");
-    // const tempPlane1 = createPlane(tempPoint3, tempPoint1, tempPoint2);
-    // const tempShape = createShape( 4, 5, tempPoint3.position, tempPlane1 );
-
-    // const tempPoint5 = createPoint(-2, 4, 7, "N");
-    // const tempPoint4 = createPoint(-4, 3, 2, "M");
-    // const tempPoint6 = createPoint(0, -3, 4, "S");
-    // const tempPlane2 = createPlane("beta", tempPoint4, tempPoint5, tempPoint6);
-
-    const geometry = new THREE.BoxGeometry(5, 5, 5);
-    geometry.rotateX(2);
-    geometry.rotateY(1);
-    geometry.translate(0, 6, 6);
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ffaa, transparent: true, opacity: 0.6, depthWrite: false} );
-
-    const cube = new THREE.Mesh(geometry, material);
-    const cube3d = cube.clone();
-
-    const edgesCube = new THREE.EdgesGeometry(geometry);
-    const linesCube = new THREE.LineSegments(edgesCube, new THREE.LineBasicMaterial( {color: 0x444444} ));
-    const linesCube3d = linesCube.clone();
-
-    //draw2dPlane(cube);
-    //scene3d.add(cube);
-    //scene3d.add(linesCube);
-
     // Add objects to scene
 
     scene2d.add(earthLine2d);
@@ -156,28 +124,6 @@ function createInitialScenes() {
     scene3d.add(linesB13);
     scene3d.add(b24);
     scene3d.add(linesB24);
-
-
-    // Temporary objects
-
-    // Line
-    const point1 = new THREE.Vector3(-10, -5, -2);
-    const point2 = new THREE.Vector3(14, 8, 7);
-    // const lineTemp = createLine(point1, point2, "a");
-    //draw2dPlane(lineTemp);
-    //draw3dPlane(lineTemp);
-
-    /* Plano
-    scene3d.add(plane);
-    scene2d.add(plane2d);
-    */
-
-    /* Cubo
-    scene2d.add(cube);
-    scene2d.add(linesCube);
-    scene3d.add(cube3d);
-    scene3d.add(linesCube3d);
-    */
 
    createNamesLists();
 }

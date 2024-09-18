@@ -47,6 +47,7 @@ export function rotateToPlane(shape, plane){
 
     return shape;
 }
+
 /**
  * 
  * @param {THREE.LineSegments} shape 

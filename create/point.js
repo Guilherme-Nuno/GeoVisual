@@ -10,6 +10,9 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     const pointMaterial = new THREE.MeshBasicMaterial( {color: 'black'} );
     const point = new THREE.Mesh(pointGeometry, pointMaterial);
 
+    // Sets position
+    point.position.set( coordinateX, coordinateY, coordinateZ);
+
     // Adds name and new parameters
     if (pointName == undefined) {
         pointName = '';
@@ -25,8 +28,6 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
         existingPointList.push(pointName);
     }
 
-    const groupPoint = new THREE.Group();
-
     point.geoType = "Point";
     point.name = pointName;
     point.onVerticalPlane = "false";
@@ -39,9 +40,6 @@ export function createPoint(coordinateX, coordinateY, coordinateZ, pointName, dr
     if (coordinateY == 0) { 
         point.onHorizontalPlane = "true";
     }
-
-    // Sets position
-    point.position.set( coordinateX, coordinateY, coordinateZ);
 
     if (draw){
         draw3dPlane(point);
