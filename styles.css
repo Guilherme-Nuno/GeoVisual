@@ -17,9 +17,9 @@ html, body {
 }
 
 .vistas {
-  flex: 1;
-  width: 100%;
-  margin: 10px;
+  flex: 0 0 50%;
+  width: 48%;
+  margin: 2px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ html, body {
 .controlos {
   flex: 0 0 30%;
   width: 100%;
-  margin: 10px;
+  margin: 2px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   box-sizing: border-box;

@@ -9,10 +9,6 @@ const PROJECTIONPLANECOLORS = '#FBFBFB';
 export const LINECOLOR = 'black';
 export const BUTTONSELECTCOLOR = 'gray';
 
-let vistas3D = document.getElementById("vista-3D");
-export const viewWidth = vistas3D.clientWidth;
-export const viewHeigth = vistas3D.clientHeight;
-
 const container3DView = document.querySelector('#vista-3D');
 const container2DView = document.querySelector('#vista-2D');
 
@@ -39,6 +35,9 @@ const renderer2d = new THREE.WebGLRenderer( {antialias: true} );
 
 renderer3d.setPixelRatio(window.devicePixelRatio);
 renderer2d.setPixelRatio(window.devicePixelRatio);
+
+renderer3d.domElement.style.width = container3DView.width;
+renderer3d.domElement.style.height = container3DView.height;
 
 container3DView.append(renderer3d.domElement);
 container2DView.append(renderer2d.domElement);
@@ -136,7 +135,7 @@ function animate() {
 
     controls3D.target = new THREE.Vector3 (0, 0, 0);
     controls3D.update();
-
+    
     renderer3d.setSize(container3DView.clientWidth, container3DView.clientHeight);
     renderer2d.setSize(container2DView.clientWidth, container2DView.clientHeight);
 

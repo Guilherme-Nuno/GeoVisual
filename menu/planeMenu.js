@@ -18,6 +18,7 @@ import { findDeviationFromAngle } from "../utils/calculations.js";
 import { createPlane } from "../create/plane.js";
 import { findObjectByName } from '../main.js';
 import { BUTTONSELECTCOLOR } from '../main.js';
+import { addSaveStack } from '../utils/fileUtils.js';
 
 export function selectMenuPlane( select ) {
     if (menu.plane == 'none' || menu.plane != select) {
@@ -111,7 +112,7 @@ export function newPlane() {
     const anglePHP = +planeAnglePHP.value;
     const anglePFP = +planeAnglePFP.value;
 
-    let object1, object2, object3, objectTemp1, objectTemp2;
+    let object1, object2, object3, objectTemp1, objectTemp2, planeCreated;
 
     let typeCheck = object1Type + object2Type + object3Type;
 
@@ -139,18 +140,18 @@ export function newPlane() {
             object3 = object3Original;
             break;
         case 'line':
-            object1 = object1Original.geochild[0];
+            object1 = object1Original.geoChild[0];
             object2 = object1Original.geoChild[1];
             break;
         case 'linepoint':
-            object1 = object1Original.geochild[0];
+            object1 = object1Original.geoChild[0];
             object2 = object1Original.geoChild[1];
             object3 = object2Original;
             break;
         case 'lineline':
-            object1 = object1Original.geochild[0];
+            object1 = object1Original.geoChild[0];
             object2 = object1Original.geoChild[1];
-            object3 = object2Original.geochild[0];
+            object3 = object2Original.geChild[0];
             break;
         default:
             break;
@@ -162,7 +163,7 @@ export function newPlane() {
                 case 'point':
                     objectTemp1 = createPoint(object1.position.x + 2, object1.position.y + 2, object1.position.z, '', false);
                     objectTemp2 = createPoint(object1.position.x - 2, object1.position.y + 2, object1.position.z, '', false);
-                    createPlane(object1, objectTemp1, objectTemp2);
+                    planeCreated = createPlane(object1, objectTemp1, objectTemp2);
                     break;
                 case 'line':
                     if (object1.position.x == object2.position.x) {
@@ -176,7 +177,7 @@ export function newPlane() {
                             3 * (object1.position.y + object2.position.y) / 4,
                             object1.position.z, '', false);
                     }
-                    createPlane(object1, object2, objectTemp1);
+                    planeCreated = createPlane(object1, object2, objectTemp1);
                     break;
                 default:
                     break;
@@ -187,7 +188,7 @@ export function newPlane() {
                 case 'point':
                     objectTemp1 = createPoint(object1.position.x + 2, object1.position.y, object1.position.z + 2, '', false);
                     objectTemp2 = createPoint(object1.position.x - 2, object1.position.y, object1.position.z + 2, '', false);
-                    createPlane(object1, objectTemp1, objectTemp2);
+                    planeCreated = createPlane(object1, objectTemp1, objectTemp2);
                     break;
                 case 'line':
                     if (object1.position.x == object2.position.x) {
@@ -201,7 +202,7 @@ export function newPlane() {
                             object1.position.y,
                             3 * (object1.position.z + object2.position.z) / 4, '', false);
                     }
-                    createPlane(object1, object2, objectTemp1);
+                    planeCreated = createPlane(object1, object2, objectTemp1);
                     break;
                 default:
                     break;
@@ -212,14 +213,14 @@ export function newPlane() {
                 case 'point':
                     objectTemp1 = createPoint(object1.position.x, object1.position.y + 2, object1.position.z + 2, '', false);
                     objectTemp2 = createPoint(object1.position.x, object1.position.y - 2, object1.position.z + 2, '', false);
-                    createPlane(object1, objectTemp1, objectTemp2);
+                    planeCreated = createPlane(object1, objectTemp1, objectTemp2);
                     break;
                 case 'line':
                     objectTemp1 = createPoint(
                         object1.position.x,
                         3 * (object1.position.y + object2.position.y) / 4,
                         3 * (object1.position.z + object2.position.z) / 4, '', false);
-                    createPlane(object1, object2, objectTemp1);
+                    planeCreated = createPlane(object1, object2, objectTemp1);
                     break;
                 default:
                     break;
@@ -228,19 +229,19 @@ export function newPlane() {
         case 'oblique':
             switch (typeCheck) {
                 case 'pointpointpoint':
-                    // Create                    
+                    planeCreated = createPlane(object1, object2, object3);
                     break;
                 case 'lineline':
-                    // Create                    
+                    planeCreated = createPlane(object1, object2, object3);
                     break;
                 case 'linepoint':
-                    // Create                    
+                    planeCreated = createPlane(object1, object2, object3);
                     break;
                 case 'pointphp':
-                    // Create                    
+                    // Create
                     break;
                 case 'pointpfp':
-                    // Create                    
+                    // Create
                     break;
                 default:
                     break;
@@ -249,10 +250,9 @@ export function newPlane() {
         case 'ramp':
             switch (typeCheck) {
                 case 'pointpoint':
-                    // Create                    
-                    break;
                 case 'line':
-                    // Create                    
+                    objectTemp1 = createPoint(object1.position.x + 2, object1.position.y, object1.position.z, '',false);
+                    planeCreated = createPlane(object1, object2, objectTemp1);
                     break;
                 case 'pointphp':
                     // Create                    
@@ -267,10 +267,9 @@ export function newPlane() {
         case 'top':
             switch (typeCheck) {
                 case 'pointpoint':
-                    // Create                    
-                    break;
                 case 'line':
-                    // Create                    
+                    objectTemp1 = createPoint(object1.position.x, object1.position.y, object1.position.z + 2, '',false);
+                    planeCreated = createPlane(object1, object2, objectTemp1);
                     break;
                 case 'pointphp':
                     objectTemp1 = createPoint(
@@ -283,7 +282,7 @@ export function newPlane() {
                         object1.position.y + findDeviationFromAngle( 1, anglePHP),
                         object1.position.z + 2, '', false
                     );
-                    createPlane(object1, objectTemp1, objectTemp2);
+                    planeCreated = createPlane(object1, objectTemp1, objectTemp2);
                     break;
                 default:
                     break;
@@ -292,10 +291,9 @@ export function newPlane() {
         case 'vertical':
             switch (typeCheck) {
                 case 'pointpoint':
-                    // Create                    
-                    break;
-                case 'line':
-                    // Create                    
+                case 'line': 
+                    objectTemp1 = createPoint(object1.position.x, object1.position.y + 2, object1.position.z, '',false);
+                    planeCreated = createPlane(object1, object2, objectTemp1);                  
                     break;
                 case 'pointpfp':
                     objectTemp1 = createPoint(
@@ -308,7 +306,7 @@ export function newPlane() {
                         object1.position.y + 2,
                         object1.position.z + findDeviationFromAngle( 1, anglePFP), '', false
                     );
-                    createPlane(object1, objectTemp1, objectTemp2);
+                    planeCreated = createPlane(object1, objectTemp1, objectTemp2);
                     break;
                 default:
                     break;
@@ -320,7 +318,7 @@ export function newPlane() {
                     object1 = object1Original;
                     object2 = object2Original;
                     object3 = object3Original;
-                    createPlane(object1, object2, object3);
+                    planeCreated = createPlane(object1, object2, object3);
                     break;
             default:
                 break;
@@ -329,4 +327,140 @@ export function newPlane() {
         default:
             break;
     }
+
+    // Creating object for save file
+    let command;
+
+    if (planeCreated != null) {
+        switch (typeCheck) {
+            case 'point':
+            case 'pointpfp':
+            case 'pointphp':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'point',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'none',
+                            x: objectTemp1.position.x,
+                            y: objectTemp1.position.y,
+                            z: objectTemp1.position.z,
+                        },
+                        object3:{
+                            type: 'none',
+                            x: objectTemp2.position.x,
+                            y: objectTemp2.position.y,
+                            z: objectTemp2.position.z,
+                        }
+                    }
+                }    
+            break;
+            case 'pointpoint':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'point',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'point',
+                            name: object2Original.name
+                        },
+                        object3:{
+                            type: 'none',
+                            x: objectTemp2.position.x,
+                            y: objectTemp2.position.y,
+                            z: objectTemp2.position.z,
+                        }
+                    }
+                } 
+            break;
+            case 'pointpointpoint':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'point',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'point',
+                            name: object2Original.name
+                        },
+                        object3:{
+                            type: 'point',
+                            name: object3Original.name
+                        }
+                    }
+                }
+            break;
+            case 'line':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'line',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'none',
+                            x: objectTemp1.position.x,
+                            y: objectTemp1.position.y,
+                            z: objectTemp1.position.z,
+                        }
+                    }
+                }
+            break;
+            case 'linepoint':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'line',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'point',
+                            name: object2Original.name
+                        }
+                    }
+                }
+            break;
+            case 'lineline':
+                command = {
+                    action: 'create',
+                    type: 'plane',
+                    name: planeCreated.name,
+                    parameters: {
+                        object1: {
+                            type: 'line',
+                            name: object1Original.name
+                        },
+                        object2: {
+                            type: 'line',
+                            name: object2Original.name
+                        }
+                    }
+                }
+            break;
+            default:
+                break;
+        }
+    }
+
+    addSaveStack(command);
 }

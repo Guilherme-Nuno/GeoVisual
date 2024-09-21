@@ -1,4 +1,5 @@
 import { createLine } from '../create/line.js';
+import { createPlane } from '../create/plane.js';
 import { createPoint } from '../create/point.js';
 import { findObjectByName } from '../main.js';
 import { clearAllScenes } from '../main.js';
@@ -49,7 +50,7 @@ function readJSONFile(file, callback) {
 
 function loadObject( object ) {
 
-    let point1, point2;
+    let point1, point2, point3, object1, object2;
 
     switch (object.action) {
         case 'create':
@@ -66,6 +67,34 @@ function loadObject( object ) {
                         point2 = findObjectByName(object.parameters.point2.name);
                     }
                     createLine(point1, point2, object.name);
+                break;
+                case 'plane':
+                    if (object.parameters.object1.type == 'point') {
+                        point1 = findObjectByName(object.parameters.object1.name);
+                        if (object.parameters.object2.type == 'point') {
+                            point2 = findObjectByName(object.parameters.object2.name);
+                        } else {
+                            point2 = createPoint(object.parameters.object2.x, object.parameters.object2.y, object.parameters.object2.z, '', false);
+                        }
+                        if (object.parameters.object3.type == 'point') {
+                            point3 = findObjectByName(object.parameters.object3.name);
+                        } else {
+                            point3 = createPoint(object.parameters.object3.x, object.parameters.object3.y, object.parameters.object3.z, '', false);
+                        }
+                    } else if (object.parameters.object1.type == 'line') {
+                        object1 = findObjectByName(object.parameters.object1.name);
+                        point1 = object1.geoChild[0];
+                        point2 = object1.geoChild[1];
+                        if (object.parameters.object2.type == 'point') {
+                            point3 = findObjectByName(object.parameters.object2.name);
+                        } else if (object.parameters.object2.type == 'line'){
+                            object2 = findObjectByName(object.parameters.object2.name);
+                            point3 = object2.geoChild[0];
+                        } else {
+                            point3 = createPoint(object.parameters.object2.x, object.parameters.object2.y, object.parameters.object2.z, '', false);
+                        }
+                    }
+                    createPlane(point1, point2, point3, object.name);
                 break;
                 default:
                 break;
