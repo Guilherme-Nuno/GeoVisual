@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { cage } from './main.js';
+import { cage } from '../main.js';
 
 export function intersection(line, object) {
     const raycaster = new THREE.Raycaster();
@@ -48,6 +48,11 @@ export function rotateToPlane(shape, plane){
     return shape;
 }
 
+/**
+ * 
+ * @param {THREE.LineSegments} shape 
+ * @returns {THREE.Vector3[]}
+ */
 export function findVertices( shape ){
     const shapeVertices = []; 
 
