@@ -51,8 +51,8 @@ export function selectMenu2D(select) {
 
 export function newShape() {
 
-    const center = findObjectByName(document.getElementById("menu.m2DPointName").value);
-    const plane = findObjectByName(document.getElementById("menu.m2DPlaneName").value);
+    const center = findObjectByName(document.getElementById("menu2DPointName").value);
+    const plane = findObjectByName(document.getElementById("menu2DPlaneName").value);
     const size = +document.getElementById('2DSize').value;
     let shape, sides;
 

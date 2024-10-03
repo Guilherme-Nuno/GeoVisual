@@ -151,7 +151,7 @@ export function draw2dPlane ( object ) {
             }
 
             // Test to see if both lines were created
-            if (planeHorizontalLine != undefined || planeVerticalLine != undefined) {
+            if (planeHorizontalLine == undefined || planeVerticalLine == undefined) {
                 if (planeHorizontalLine == undefined) {
                     if (line1HorizontalPoint != null){
                         xIntersectionPoint = intersection(planeVerticalLine, horizontalPlane);

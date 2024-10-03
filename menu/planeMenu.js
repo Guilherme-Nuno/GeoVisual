@@ -376,9 +376,9 @@ export function newPlane() {
                         },
                         object3:{
                             type: 'none',
-                            x: objectTemp2.position.x,
-                            y: objectTemp2.position.y,
-                            z: objectTemp2.position.z,
+                            x: objectTemp1.position.x,
+                            y: objectTemp1.position.y,
+                            z: objectTemp1.position.z,
                         }
                     }
                 } 
